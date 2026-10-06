@@ -1057,35 +1057,38 @@ let theirTrade=[];
 
 /* LOAD LIVE SHEET */
 
-google.script.run
-.withSuccessHandler(function(data){
+fetch('https://script.google.com/macros/s/AKfycbwMch7bFYlXAhWYUK_bz_-gEXlvc9QdBowbb5v-BkQ_aSasVpYq44F04N_TTrHaCf6c/exec?api=cards')
+  .then(response => {
+    if (!response.ok) throw new Error('Database connection failed');
+    return response.json();
+  })
+  .then(function(data){
 
-  cards=data || [];
+    cards = data || [];
 
-  document.getElementById('loading').style.display='none';
-  document.getElementById('site').style.display='block';
+    document.getElementById('loading').style.display='none';
+    document.getElementById('site').style.display='block';
 
-  document.getElementById('cardStat').textContent=cards.length;
+    document.getElementById('cardStat').textContent=cards.length;
 
-  const teams=[
-    ...new Set(cards.map(c=>c.team).filter(Boolean))
-  ];
+    const teams=[
+      ...new Set(cards.map(c=>c.team).filter(Boolean))
+    ];
 
-  document.getElementById('teamStat').textContent=teams.length;
+    document.getElementById('teamStat').textContent=teams.length;
 
-  populateFilters();
-  renderDatabase();
-  renderTrade();
+    populateFilters();
+    renderDatabase();
+    renderTrade();
 
-})
-.withFailureHandler(function(error){
+  })
+  .catch(function(error){
 
-  document.getElementById('loading').innerHTML=
-    'Could not connect to the Vault database.<br><br>'+
-    escapeHtml(error.message || error);
+    document.getElementById('loading').innerHTML=
+      'Could not connect to the Vault database.<br><br>'+
+      escapeHtml(error.message || error);
 
-})
-.getCards();
+  });
 
 
 /* NAVIGATION */
