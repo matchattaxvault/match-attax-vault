@@ -1124,18 +1124,21 @@ function money(value){
 }
 
 function displayValue(card){
-
   if(card.valuationStatus === 'verified' &&
      card.marketValue !== null){
-
     return money(card.marketValue);
+  }
+
+  if(card.valuationStatus === 'estimate' &&
+     card.marketValue !== null){
+    return money(card.marketValue) + ' • Estimated';
   }
 
   if(card.valuationStatus === 'hold'){
     return 'Market Value Under Review';
   }
 
-  return 'Insufficient Market Data';
+  return 'Market Data Unavailable';
 }
 
 
