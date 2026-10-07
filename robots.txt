@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://matchattaxvault.github.io/match-attax-vault/sitemap.xml
