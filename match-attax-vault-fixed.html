@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" href="https://drive.google.com/thumbnail?id=1Y4tq97mb32ZVbnUzQ6MruHKokjtVNmvU&sz=w64" type="image/png">
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Match Attax Vault | Card Database, Values & Trade Checker</title>
+  <meta name="description" content="Search the Match Attax Vault card database, check estimated card values, compare trades and explore 2025/26 Topps Match Attax UEFA cards. Independent collector tool.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://matchattaxvault.github.io/match-attax-vault/">
+  <meta property="og:title" content="Match Attax Vault">
+  <meta property="og:description" content="Know your cards. Trade smarter.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://matchattaxvault.github.io/match-attax-vault/">
+
+  <style>
+    :root{
+      --bg:#06111f;
+      --panel:#0c1c2f;
+      --panel2:#112740;
+      --green:#35f58a;
+      --blue:#4394ff;
+      --text:#ffffff;
+      --muted:#8ea7c1;
+      --border:#203c59;
+      --yellow:#ffd75a;
+      --red:#ff5265;
+    }
+
+    *{box-sizing:border-box}
+
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at top right,#12375f 0,transparent 28%),
+        radial-gradient(circle at bottom left,#0b2c34 0,transparent 25%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    /* HEADER */
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      padding:15px 28px;
+      background:rgba(6,17,31,.96);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(12px);
+    }
+
+    .brand{
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:1px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .brand span{color:var(--green)}
+
+    .nav{
+      display:flex;
+      gap:5px;
+      flex-wrap:wrap;
+    }
+
+    .nav button{
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      padding:9px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .nav button:hover,
+    .nav button.active{
+      background:var(--panel2);
+      color:var(--green);
+    }
+
+    /* GENERAL */
+
+    .page{
+      display:none;
+      max-width:1180px;
+      margin:auto;
+      padding:34px 20px 60px;
+    }
+
+    .page.active{display:block}
+
+    .section-title{
+      font-size:31px;
+      margin:0 0 7px;
+    }
+
+    .subtitle{
+      color:var(--muted);
+      line-height:1.7;
+      margin-bottom:25px;
+    }
+
+    .panel{
+      background:rgba(12,28,47,.96);
+      border:1px solid var(--border);
+      border-radius:17px;
+      padding:22px;
+    }
+
+    .green{color:var(--green)}
+
+    /* HOME */
+
+    .hero{
+      min-height:450px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:60px 20px;
+    }
+
+    .hero-inner{
+      max-width:850px;
+    }
+
+    .hero-badge{
+      display:inline-block;
+      padding:7px 13px;
+      border-radius:30px;
+      color:var(--green);
+      background:rgba(53,245,138,.08);
+      border:1px solid rgba(53,245,138,.2);
+      font-size:12px;
+      margin-bottom:20px;
+    }
+
+    .hero h1{
+      font-size:58px;
+      line-height:1;
+      margin:0;
+      letter-spacing:-2px;
+    }
+
+    .hero h1 span{color:var(--green)}
+
+    .hero-tagline{
+      font-size:21px;
+      color:var(--muted);
+      margin:18px 0 10px;
+    }
+
+    .hero-description{
+      color:#b8c8d8;
+      max-width:680px;
+      margin:0 auto 28px;
+      line-height:1.7;
+    }
+
+    .hero-buttons{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn{
+      padding:13px 20px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:14px;
+    }
+
+    .primary-btn{
+      border:1px solid var(--green);
+      background:var(--green);
+      color:#04150c;
+    }
+
+    .secondary-btn{
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:white;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:15px;
+      margin:10px 0 28px;
+    }
+
+    .stat{
+      padding:22px;
+      border-radius:15px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      text-align:center;
+    }
+
+    .stat-number{
+      color:var(--green);
+      font-size:30px;
+      font-weight:900;
+    }
+
+    .stat-label{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:5px;
+    }
+
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+
+    .feature{
+      padding:23px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:15px;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .feature:hover{
+      transform:translateY(-3px);
+      border-color:var(--green);
+    }
+
+    .feature-icon{
+      font-size:27px;
+      margin-bottom:12px;
+    }
+
+    .feature h3{margin:0 0 8px}
+
+    .feature p{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+      margin:0;
+    }
+
+    /* INPUTS */
+
+    input,select{
+      width:100%;
+      padding:14px 15px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#071625;
+      color:white;
+      font-size:14px;
+      outline:none;
+    }
+
+    input:focus,select:focus{
+      border-color:var(--green);
+    }
+
+    .search-bar{
+      margin-bottom:15px;
+    }
+
+    /* DATABASE */
+
+    .filters{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr;
+      gap:10px;
+      margin-bottom:18px;
+    }
+
+    .database-info{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:13px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:800px;
+    }
+
+    th{
+      text-align:left;
+      padding:13px;
+      background:#0a1829;
+      color:#9fb4c9;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+
+    td{
+      padding:13px;
+      border-top:1px solid var(--border);
+      font-size:13px;
+    }
+
+    tbody tr:hover{
+      background:var(--panel2);
+    }
+
+    .table-price{
+      color:var(--green);
+      font-weight:900;
+    }
+
+    .category-pill{
+      display:inline-block;
+      padding:4px 8px;
+      background:rgba(67,148,255,.10);
+      color:#86bdff;
+      border-radius:20px;
+      font-size:10px;
+    }
+
+    /* VALUE CHECKER */
+
+    .results{
+      margin-top:8px;
+      max-height:360px;
+      overflow:auto;
+      border-radius:10px;
+    }
+
+    .result-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:15px;
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      background:#091a2b;
+      cursor:pointer;
+    }
+
+    .result-row:hover{background:var(--panel2)}
+
+    .card-name{
+      font-weight:800;
+      font-size:15px;
+    }
+
+    .meta{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:5px;
+      line-height:1.5;
+    }
+
+    .price{
+      color:var(--green);
+      font-weight:900;
+      font-size:18px;
+      white-space:nowrap;
+    }
+
+    .value-card{
+      margin-top:22px;
+      padding:27px;
+      border:1px solid var(--green);
+      border-radius:16px;
+      background:linear-gradient(135deg,#102b42,#091827);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .value-card:after{
+      content:"VAULT";
+      position:absolute;
+      right:-5px;
+      bottom:-20px;
+      font-size:80px;
+      font-weight:900;
+      color:rgba(255,255,255,.025);
+    }
+
+    .value-card h2{
+      font-size:28px;
+      margin:8px 0;
+    }
+
+    .big-price{
+      color:var(--green);
+      font-size:40px;
+      font-weight:900;
+      margin:17px 0 3px;
+    }
+
+    /* TRADE */
+
+    .trade-toolbar{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:14px;
+    }
+
+    .trade-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .trade-side{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:20px;
+    }
+
+    .side-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:13px;
+    }
+
+    .side-title h2{margin:0}
+
+    .count{
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .trade-card{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid var(--border);
+    }
+
+    .remove{
+      color:var(--red);
+      cursor:pointer;
+      font-size:10px;
+      margin-top:5px;
+    }
+
+    .trade-total{
+      margin-top:17px;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .trade-total span{color:var(--green)}
+
+    .clear-btn{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:9px 12px;
+      cursor:pointer;
+    }
+
+    .trade-result{
+      margin-top:20px;
+      padding:23px;
+      border-radius:15px;
+      text-align:center;
+      font-size:23px;
+      font-weight:900;
+    }
+
+    .result-detail{
+      font-size:13px;
+      font-weight:normal;
+      line-height:1.7;
+      margin-top:7px;
+    }
+
+    .waiting{
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:var(--muted);
+    }
+
+    .fair{
+      border:1px solid var(--green);
+      background:rgba(53,245,138,.09);
+      color:var(--green);
+    }
+
+    .slight{
+      border:1px solid var(--yellow);
+      background:rgba(255,215,90,.09);
+      color:var(--yellow);
+    }
+
+    .unfair{
+      border:1px solid var(--red);
+      background:rgba(255,82,101,.09);
+      color:var(--red);
+    }
+
+    /* VALUE GUIDE */
+
+    .guide-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:15px;
+    }
+
+    .guide-card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:20px;
+    }
+
+    .guide-card h3{
+      margin:0 0 8px;
+    }
+
+    .guide-card p{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    /* ABOUT */
+
+    .about-box{
+      max-width:850px;
+    }
+
+    .about-box p{
+      color:#b2c4d6;
+      line-height:1.8;
+    }
+
+    .rule{
+      padding:13px 15px;
+      border-left:3px solid var(--green);
+      background:var(--panel);
+      margin:10px 0;
+      color:#c3d0dd;
+      font-size:13px;
+    }
+
+    .footer{
+      text-align:center;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      padding:24px 15px;
+      font-size:11px;
+    }
+
+    .loading{
+      text-align:center;
+      padding:70px 20px;
+      color:var(--green);
+    }
+
+    .empty{
+      color:var(--muted);
+      padding:18px;
+      text-align:center;
+      font-size:12px;
+    }
+
+
+    /* VAULT AI */
+    .vault-ai{margin-top:18px;padding:18px;border:1px solid rgba(53,245,138,.35);border-radius:14px;background:rgba(53,245,138,.045)}
+    .vault-ai-title{font-weight:900;color:var(--green);margin-bottom:7px}
+    .vault-ai-text{color:#b8c8d8;font-size:12px;line-height:1.6;margin-bottom:13px}
+    .vault-ai-output{margin-top:13px;padding:14px;border-radius:10px;background:#071625;border:1px solid var(--border);color:#c8d5e2;font-size:13px;line-height:1.65;display:none}
+    .vault-ai-output strong{color:var(--green)}
+    .ai-trade-box{margin-top:16px;text-align:center}
+    button:disabled{opacity:.55;cursor:not-allowed}
+
+    @media(max-width:800px){
+
+      .topbar{
+        padding:13px;
+        flex-direction:column;
+      }
+
+      .nav{
+        justify-content:center;
+      }
+
+      .hero h1{
+        font-size:42px;
+      }
+
+      .stats,
+      .feature-grid,
+      .guide-grid{
+        grid-template-columns:1fr;
+      }
+
+      .filters{
+        grid-template-columns:1fr;
+      }
+
+      .trade-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="brand" onclick="showPage('home')">
+   <img src="https://drive.google.com/thumbnail?id=1Y4tq97mb32ZVbnUzQ6MruHKokjtVNmvU&sz=w300"
+     alt="Match Attax Vault"
+     style="height:55px;width:auto;display:block;">
+  </div>
+
+  <nav class="nav">
+    <button id="nav-home" class="active" onclick="showPage('home')">Home</button>
+    <button id="nav-database" onclick="showPage('database')">Card Database</button>
+    <button id="nav-value" onclick="showPage('value')">Value Checker</button>
+    <button id="nav-trade" onclick="showPage('trade')">Trade Checker</button>
+    <button id="nav-guide" onclick="showPage('guide')">Value Guide</button>
+    <button id="nav-about" onclick="showPage('about')">About</button>
+  </nav>
+
+</header>
+
+
+<div id="loading" class="loading" style="display:none"></div>
+
+<div id="site">
+
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+  <div class="hero">
+
+    <div class="hero-inner">
+
+      <div class="hero-badge" id="connectionBadge">
+        ● LIVE CARD DATABASE
+      </div>
+
+      <h1>
+        MATCH ATTAX<br>
+        <span>VAULT</span>
+      </h1>
+
+      <div class="hero-tagline">
+        Know your cards. Trade smarter.
+      </div>
+
+      <div class="hero-description">
+        Search your Match Attax collection, check estimated
+        collector values and compare trades using one connected
+        card database.
+      </div>
+
+      <div class="hero-buttons">
+
+        <button class="primary-btn" onclick="showPage('value')">
+          Check a Card Value
+        </button>
+
+        <button class="secondary-btn" onclick="showPage('trade')">
+          Check a Trade
+        </button>
+
+        <button class="secondary-btn" onclick="showPage('database')">
+          Browse Database
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+      <div class="stat-number" id="cardStat">—</div>
+      <div class="stat-label">CARDS IN THE VAULT</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-number" id="teamStat">—</div>
+      <div class="stat-label">TEAMS REPRESENTED</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-number">₹</div>
+      <div class="stat-label">INDIA-FACING VALUE GUIDE</div>
+    </div>
+
+  </div>
+
+
+  <div class="feature-grid">
+
+    <div class="feature" onclick="showPage('database')">
+      <div class="feature-icon">🗂️</div>
+      <h3>Card Database</h3>
+      <p>
+        Browse the Vault by player, team, card number,
+        category and estimated value.
+      </p>
+    </div>
+
+    <div class="feature" onclick="showPage('value')">
+      <div class="feature-icon">🔍</div>
+      <h3>Value Checker</h3>
+      <p>
+        Find the exact version of a card and see its
+        current estimated collector value.
+      </p>
+    </div>
+
+    <div class="feature" onclick="showPage('trade')">
+      <div class="feature-icon">⚖️</div>
+      <h3>Trade Checker</h3>
+      <p>
+        Compare multiple cards on both sides and see
+        whether a proposed trade is fair by value.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- DATABASE -->
+
+<section id="database" class="page">
+
+  <h1 class="section-title">Card Database</h1>
+
+  <div class="subtitle">
+    Explore the cards currently recorded in Match Attax Vault.
+  </div>
+
+  <div class="panel">
+
+    <div class="filters">
+
+      <input id="dbSearch"
+        placeholder="Search player, team, card number or ID..."
+        oninput="renderDatabase()">
+
+      <select id="seasonFilter" onchange="renderDatabase()">
+        <option value="">All Seasons</option>
+      </select>
+
+      <select id="teamFilter" onchange="renderDatabase()">
+        <option value="">All Teams</option>
+      </select>
+
+      <select id="categoryFilter" onchange="renderDatabase()">
+        <option value="">All Categories</option>
+      </select>
+
+<select id="sortFilter" onchange="renderDatabase()">
+  <option value="number">Card Number</option>
+  <option value="valueHigh">Value: High to Low</option>
+  <option value="valueLow">Value: Low to High</option>
+  <option value="player">Player: A–Z</option>
+</select>
+    </div>
+
+    <div class="database-info">
+      <span id="databaseCount"></span>
+      <span>Values shown in ₹</span>
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Card</th>
+            <th>Player / Card</th>
+            <th>Team</th>
+            <th>Category</th>
+            <th>Estimated Value</th>
+          </tr>
+        </thead>
+
+        <tbody id="databaseBody"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- VALUE CHECKER -->
+
+<section id="value" class="page">
+
+  <h1 class="section-title">Card Value Checker</h1>
+
+  <div class="subtitle">
+    Search for the exact card. Players can have multiple
+    cards with different rarities and values.
+  </div>
+
+  <div class="panel">
+
+    <input id="valueSearch"
+      class="search-bar"
+      placeholder="Try: Lamine Yamal, Salah, 100 Club, BE-3..."
+      oninput="searchValueCards()">
+
+    <div id="valueResults" class="results"></div>
+
+    <div id="selectedValue"></div>
+
+  </div>
+
+</section>
+
+
+<!-- TRADE CHECKER -->
+
+<section id="trade" class="page">
+
+  <h1 class="section-title">Trade Checker</h1>
+
+  <div class="subtitle">
+    Add cards to each side and compare their estimated
+    collector values.
+  </div>
+
+  <div class="trade-toolbar">
+
+    <span class="meta">
+      Fair: ≤10% • Slightly uneven: >10–25% • Unfair: >25%
+    </span>
+
+    <button class="clear-btn" onclick="clearTrade()">
+      Clear Trade
+    </button>
+
+  </div>
+
+  <div class="trade-grid">
+
+    <div class="trade-side">
+
+      <div class="side-title">
+        <h2>Your Cards</h2>
+        <span class="count" id="yourCount">0 cards</span>
+      </div>
+
+      <input id="yourSearch"
+        placeholder="Search card to add..."
+        oninput="searchTradeCards('your')">
+
+      <div id="yourSearchResults" class="results"></div>
+
+      <div id="yourCards"></div>
+
+      <div class="trade-total">
+        Total: <span id="yourTotal">₹0</span>
+      </div>
+
+    </div>
+
+
+    <div class="trade-side">
+
+      <div class="side-title">
+        <h2>Their Cards</h2>
+        <span class="count" id="theirCount">0 cards</span>
+      </div>
+
+      <input id="theirSearch"
+        placeholder="Search card to add..."
+        oninput="searchTradeCards('their')">
+
+      <div id="theirSearchResults" class="results"></div>
+
+      <div id="theirCards"></div>
+
+      <div class="trade-total">
+        Total: <span id="theirTotal">₹0</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="tradeResult" class="trade-result waiting">
+    Add cards to both sides
+  </div>
+
+  <div class="ai-trade-box">
+    <button class="primary-btn" id="tradeAiBtn" onclick="verifyTradeWithAI()">
+      ✨ AI Verify This Trade
+    </button>
+    <div id="tradeAiOutput" class="vault-ai-output"></div>
+  </div>
+
+</section>
+
+
+<!-- VALUE GUIDE -->
+
+<section id="guide" class="page">
+
+  <h1 class="section-title">Value Guide</h1>
+
+  <div class="subtitle">
+    Understand what the values in Match Attax Vault mean
+    before buying, selling or trading.
+  </div>
+
+  <div class="guide-grid">
+
+    <div class="guide-card">
+      <h3>💰 Estimated Value</h3>
+      <p>
+        Values are collector-market estimates rather than
+        official retail prices. Market prices can move as
+        demand and availability change.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <h3>✨ Card Rarity</h3>
+      <p>
+        Base cards, Limited Editions, Black Edge, Infinity,
+        Hall of Fame and other chase cards can have very
+        different market values.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <h3>🛡️ Condition Matters</h3>
+      <p>
+        The Vault generally uses Near Mint as its valuation
+        reference. Damage, bends, scratches or poor corners
+        can reduce a card's actual selling price.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <h3>📈 Demand Matters</h3>
+      <p>
+        Popular players and scarce cards can trade above
+        normal category averages when collector demand rises.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <h3>🌍 Market Differences</h3>
+      <p>
+        International sale prices and Indian collector-market
+        prices may differ. Vault values are presented in INR
+        for easier local comparison.
+      </p>
+    </div>
+
+    <div class="guide-card">
+      <h3>⚖️ Trading</h3>
+      <p>
+        Value is only one part of a trade. Personal preference,
+        scarcity and collecting goals may also influence what
+        feels fair to individual collectors.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section id="about" class="page">
+
+  <div class="about-box">
+
+    <h1 class="section-title">About Match Attax Vault</h1>
+
+    <div class="subtitle">
+      A collector-focused tool for understanding cards and
+      making smarter trades.
+    </div>
+
+    <div class="panel">
+
+      <p>
+        <strong class="green">Match Attax Vault</strong> is an
+        independent collector database and valuation tool built
+        to make Match Attax collecting easier to understand.
+      </p>
+
+      <p>
+        The Vault connects card identification, estimated values
+        and trade comparison in one place. Each card is tracked
+        using a unique Card ID so that different versions of the
+        same player can be distinguished correctly.
+      </p>
+
+      <h3>Trade fairness system</h3>
+
+      <div class="rule">
+        🟢 <strong>FAIR</strong> — value difference of 10% or less
+      </div>
+
+      <div class="rule">
+        🟡 <strong>SLIGHTLY UNEVEN</strong> — difference above
+        10% and up to 25%
+      </div>
+
+      <div class="rule">
+        🔴 <strong>UNFAIR BY VALUE</strong> — difference above 25%
+      </div>
+
+      <p class="meta" style="margin-top:22px">
+        Match Attax Vault is an independent collector project.
+        It is not affiliated with, endorsed by, or an official
+        service of Topps. Card values are estimates and actual
+        transaction prices may vary.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<footer class="footer">
+  MATCH ATTAX VAULT • Know your cards. Trade smarter.
+</footer>
+
+
+<script>
+
+let cards=[];
+let yourTrade=[];
+let theirTrade=[];
+
+
+/* FAST NON-BLOCKING LIVE DATABASE */
+
+document.getElementById('site').style.display='block';
+document.getElementById('connectionBadge').textContent='● LOADING CARD DATABASE';
+
+const VAULT_API = './cards.json';
+const ACTIVE_SEASON = '2025/26';
+
+async function fetchVaultCardsOnce(timeoutMs=30000){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try{
+    const response = await fetch(VAULT_API, {signal:controller.signal, cache:'no-cache'});
+    if(!response.ok) throw new Error('Database connection failed: HTTP '+response.status);
+    const data = await response.json();
+    if(!Array.isArray(data) || data.length===0) throw new Error('Database returned no cards');
+    return data.filter(card => String(card.season || '').trim() === ACTIVE_SEASON);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function loadVaultCards(){
+  const badge=document.getElementById('connectionBadge');
+  badge.textContent='● LOADING CARD DATABASE';
+  let lastError=null;
+  for(let attempt=1; attempt<=2; attempt++){
+    try{
+      cards=await fetchVaultCardsOnce(8000);
+      document.getElementById('cardStat').textContent=cards.length;
+      const teams=[...new Set(cards.map(c=>c.team).filter(Boolean))];
+      document.getElementById('teamStat').textContent=teams.length;
+      badge.textContent='● LIVE CARD DATABASE';
+      populateFilters();
+      renderDatabase();
+      renderTrade();
+      return;
+    }catch(error){
+      lastError=error;
+      console.warn('Vault database attempt '+attempt+' failed:',error);
+      if(attempt<2){
+        badge.textContent='● CONNECTING TO CARD DATABASE';
+        await new Promise(resolve=>setTimeout(resolve,1200*attempt));
+      }
+    }
+  }
+  badge.textContent='● DATABASE TEMPORARILY UNAVAILABLE';
+  console.error('Vault database:',lastError);
+}
+
+loadVaultCards();
+
+
+/* NAVIGATION */
+
+function showPage(id){
+
+  document.querySelectorAll('.page')
+    .forEach(p=>p.classList.remove('active'));
+
+  document.querySelectorAll('.nav button')
+    .forEach(b=>b.classList.remove('active'));
+
+  document.getElementById(id).classList.add('active');
+
+  const nav=document.getElementById('nav-'+id);
+
+  if(nav) nav.classList.add('active');
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+
+/* MONEY */
+
+function money(value){
+
+  if(value === null || value === undefined || value === ''){
+    return 'Market data unavailable';
+  }
+
+  return '₹'+Number(value).toLocaleString('en-IN');
+
+}
+
+function displayValue(card){
+  if(card.valuationStatus === 'verified' &&
+     card.marketValue !== null){
+    return money(card.marketValue);
+  }
+
+  if(card.valuationStatus === 'estimate' &&
+     card.marketValue !== null){
+    return money(card.marketValue) + ' • Estimated';
+  }
+
+  if(card.valuationStatus === 'hold'){
+    return 'Market Value Under Review';
+  }
+
+  return 'Market Data Unavailable';
+}
+
+
+function valuationLabel(card){
+
+  if(card.valuationStatus === 'verified'){
+    return 'Verified market value • ' +
+      escapeHtml(card.confidence) + ' confidence';
+  }
+
+  if(card.valuationStatus === 'estimate'){
+    return 'Comparable-based collector estimate';
+  }
+
+  if(card.valuationStatus === 'hold'){
+    return 'Market value under review';
+  }
+
+  return 'No usable current market value';
+}
+
+/* COMMON SEARCH */
+
+function findCards(query){
+
+  query=String(query||'').trim().toLowerCase();
+
+  if(!query) return [];
+
+  return cards.filter(card=>{
+
+    const text=[
+      card.id,
+      card.name,
+      card.team,
+      card.season,
+      card.number,
+      card.category,
+      card.finish
+    ].join(' ').toLowerCase();
+
+    return text.includes(query);
+
+  }).slice(0,40);
+}
+
+
+/* DATABASE */
+
+function populateFilters(){
+
+  const seasons=[
+    ...new Set(cards.map(c=>c.season).filter(Boolean))
+  ].sort().reverse();
+
+  const teams=[
+    ...new Set(cards.map(c=>c.team).filter(Boolean))
+  ].sort();
+
+  const categories=[
+    ...new Set(cards.map(c=>c.category).filter(Boolean))
+  ].sort();
+
+  const seasonSelect=document.getElementById('seasonFilter');
+  const teamSelect=document.getElementById('teamFilter');
+  const categorySelect=document.getElementById('categoryFilter');
+
+  seasonSelect.innerHTML='<option value="2025/26">2025/26 Only</option>';
+  teamSelect.innerHTML='<option value="">All Teams</option>';
+  categorySelect.innerHTML='<option value="">All Categories</option>';
+
+  seasons.forEach(season=>{
+    const option=document.createElement('option');
+    option.value=season;
+    option.textContent=season;
+    seasonSelect.appendChild(option);
+  });
+
+  teams.forEach(team=>{
+
+    const option=document.createElement('option');
+    option.value=team;
+    option.textContent=team;
+    teamSelect.appendChild(option);
+
+  });
+
+  categories.forEach(category=>{
+
+    const option=document.createElement('option');
+    option.value=category;
+    option.textContent=category;
+    categorySelect.appendChild(option);
+
+  });
+}
+
+
+function renderDatabase(){
+
+  const q=
+    (document.getElementById('dbSearch')?.value || '')
+    .toLowerCase();
+
+  const season=
+    document.getElementById('seasonFilter')?.value || '';
+
+  const team=
+    document.getElementById('teamFilter')?.value || '';
+
+  const category=
+    document.getElementById('categoryFilter')?.value || '';
+const sort=
+  document.getElementById('sortFilter')?.value || 'number';
+  let filtered=cards.filter(card=>{
+
+    const searchText=[
+      card.id,
+      card.name,
+      card.team,
+      card.season,
+      card.number,
+      card.category
+    ].join(' ').toLowerCase();
+
+    return (!q || searchText.includes(q)) &&
+           (!season || card.season===season) &&
+           (!team || card.team===team) &&
+           (!category || card.category===category);
+
+  });
+if(sort==='valueHigh'){
+
+  filtered.sort((a,b)=>{
+
+    const aValue =
+      a.tradeEligible === true
+        ? Number(a.marketValue)
+        : -1;
+
+    const bValue =
+      b.tradeEligible === true
+        ? Number(b.marketValue)
+        : -1;
+
+    return bValue-aValue;
+  });
+
+}
+else if(sort==='valueLow'){
+
+  filtered.sort((a,b)=>{
+
+    const aVerified =
+      a.tradeEligible === true;
+
+    const bVerified =
+      b.tradeEligible === true;
+
+    if(aVerified && !bVerified) return -1;
+    if(!aVerified && bVerified) return 1;
+    if(!aVerified && !bVerified) return 0;
+
+    return Number(a.marketValue)-Number(b.marketValue);
+  });
+
+}
+else if(sort==='player'){
+  filtered.sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+}
+else{
+  filtered.sort((a,b)=>{
+    const aNum=parseInt(a.number);
+    const bNum=parseInt(b.number);
+
+    if(!isNaN(aNum) && !isNaN(bNum)){
+      return aNum-bNum;
+    }
+
+    if(!isNaN(aNum)) return -1;
+    if(!isNaN(bNum)) return 1;
+
+    return String(a.number).localeCompare(
+      String(b.number),
+      undefined,
+      {numeric:true}
+    );
+  });
+}
+  document.getElementById('databaseCount').textContent=
+    filtered.length+' cards shown';
+
+  const body=document.getElementById('databaseBody');
+
+  if(!filtered.length){
+
+    body.innerHTML=
+      '<tr><td colspan="5" class="empty">'+
+      'No matching cards found.'+
+      '</td></tr>';
+
+    return;
+  }
+
+  body.innerHTML=filtered.map(card=>`
+
+    <tr>
+
+      <td>
+        ${escapeHtml(card.number)}
+        <div class="meta">${escapeHtml(card.id)}</div>
+      </td>
+
+      <td>
+        <strong>${escapeHtml(card.name)}</strong>
+        <div class="meta">${escapeHtml(card.season)}</div>
+      </td>
+
+      <td>${escapeHtml(card.team)}</td>
+
+      <td>
+        <span class="category-pill">
+          ${escapeHtml(card.category)}
+        </span>
+      </td>
+
+      <td class="table-price">
+
+  ${displayValue(card)}
+
+  <div class="meta">
+    ${valuationLabel(card)}
+  </div>
+
+</td>
+
+    </tr>
+
+  `).join('');
+}
+
+
+/* VALUE CHECKER */
+
+function searchValueCards(){
+
+  const q=document.getElementById('valueSearch').value;
+
+  const results=findCards(q);
+
+  const box=document.getElementById('valueResults');
+
+  if(!q.trim()){
+
+    box.innerHTML='';
+    return;
+
+  }
+
+  if(!results.length){
+
+    box.innerHTML=
+      '<div class="empty">No matching card found.</div>';
+
+    return;
+  }
+
+  box.innerHTML=results.map(card=>`
+
+    <div class="result-row"
+      onclick="selectValueCard('${safe(card.id)}')">
+
+      <div>
+
+        <div class="card-name">
+          ${escapeHtml(card.name)}
+        </div>
+
+        <div class="meta">
+          ${escapeHtml(card.team)}
+          • ${escapeHtml(card.season)}
+          • ${escapeHtml(card.category)}
+          • #${escapeHtml(card.number)}
+        </div>
+
+      </div>
+
+      <div class="price">
+        ${displayValue(card)}
+      </div>
+
+    </div>
+
+  `).join('');
+}
+
+
+function selectValueCard(id){
+
+  const card=cards.find(c=>c.id===id);
+
+  if(!card) return;
+
+  document.getElementById('valueResults').innerHTML='';
+
+  document.getElementById('valueSearch').value=card.name;
+
+  document.getElementById('selectedValue').innerHTML=`
+
+    <div class="value-card">
+
+      <span class="category-pill">
+        ${escapeHtml(card.category || 'Match Attax')}
+      </span>
+
+      <div class="meta" style="margin-top:10px">
+        ${escapeHtml(card.id)}
+      </div>
+
+      <h2>${escapeHtml(card.name)}</h2>
+
+      <div class="meta">
+        ${escapeHtml(card.team)}
+        • ${escapeHtml(card.season)}
+        ${card.finish ? ' • '+escapeHtml(card.finish) : ''}
+      </div>
+
+      <div class="big-price">
+  ${displayValue(card)}
+</div>
+
+<div class="meta">
+  ${valuationLabel(card)}
+</div>
+
+${card.valuationStatus === 'verified' ? `
+  <div class="meta" style="margin-top:10px">
+    ${card.evidenceType
+      ? 'Evidence: '+escapeHtml(card.evidenceType)
+      : ''}
+    ${card.lastMarketCheck
+      ? '<br>Market checked: '+escapeHtml(card.lastMarketCheck)
+      : ''}
+  </div>
+` : ''}
+
+${card.valuationStatus === 'insufficient' &&
+   card.provisionalValue !== null ? `
+  <div class="meta" style="margin-top:14px">
+    Provisional Collector Estimate:
+    <strong>${money(card.provisionalValue)}</strong>
+    <br>
+    This is not a verified market price.
+  </div>
+` : ''}
+
+${card.valuationStatus === 'hold' ? `
+  <div class="meta" style="margin-top:14px">
+    Market Value Under Review
+    <br>
+    This card is excluded from verified-value trade calculations.
+  </div>
+` : ''}
+
+      <div class="vault-ai">
+        <div class="vault-ai-title">✨ Vault AI Market Check</div>
+        <div class="vault-ai-text">
+          Check fresh public sold-price evidence for this exact card.
+          Vault AI never changes the database automatically.
+        </div>
+        <button class="primary-btn" id="vaultAiBtn"
+          onclick="checkVaultAI('${safe(card.id)}')">Check Live Market</button>
+        <div id="vaultAiOutput" class="vault-ai-output"></div>
+      </div>
+
+      <div class="meta" style="margin-top:15px">
+        Card #${escapeHtml(card.number)}
+        • Condition:
+        ${escapeHtml(card.condition || 'Not specified')}
+      </div>
+
+      <div class="meta" style="margin-top:10px">
+        ${
+          card.updated
+          ? 'Value reviewed: '+escapeHtml(card.updated)
+          : ''
+        }
+      </div>
+
+    </div>
+
+  `;
+}
+
+
+
+/* VAULT AI */
+
+async function requestVaultReview(card){
+  const url=
+    'https://script.google.com/macros/s/AKfycbwMch7bFYlXAhWYUK_bz_-gEXlvc9QdBowbb5v-BkQ_aSasVpYq44F04N_TTrHaCf6c/exec'+
+    '?api=valueReview&cardId='+encodeURIComponent(card.id);
+
+  const response=await fetch(url);
+  if(!response.ok) throw new Error('Live market check could not be completed.');
+  const result=await response.json();
+  if(result.error) throw new Error(result.error);
+  return result;
+}
+
+function vaultReviewText(result){
+  if(result.verdict==='VALUE_REVIEW_RECOMMENDED'){
+    return '<strong>⚠️ Manual review recommended</strong><br>'+
+      'Multiple exact-card sold-price signals suggest this stored value deserves review. '+
+      'The Vault owner has been alerted. No database value was changed automatically.';
+  }
+  if(result.verdict==='VALUE_SUPPORTED'){
+    return '<strong>✓ Current value looks reasonable</strong><br>'+
+      'The exact-card sold evidence does not show a large enough discrepancy to recommend changing the Vault value.';
+  }
+  if(result.verdict==='LIMITED_EVIDENCE'){
+    return '<strong>✓ No change recommended</strong><br>'+
+      'Fresh evidence was checked, but there is not enough exact-card sold evidence to challenge the current Vault value.';
+  }
+  if(result.verdict==='DAILY_LIMIT'){
+    return '<strong>Live check unavailable for now</strong><br>'+
+      'Today’s free live-market allowance has been reached. The stored Vault value remains available.';
+  }
+  return '<strong>Market check completed</strong><br>'+
+    escapeHtml(result.message || 'No change is recommended.');
+}
+
+async function checkVaultAI(id){
+  const card=cards.find(c=>c.id===id);
+  const output=document.getElementById('vaultAiOutput');
+  const button=document.getElementById('vaultAiBtn');
+  if(!card || !output || !button) return;
+
+  output.style.display='block';
+  output.innerHTML='🔎 Checking exact-card sold-price evidence...';
+  button.disabled=true;
+  button.textContent='Checking...';
+
+  try{
+    const result=await requestVaultReview(card);
+    output.innerHTML=vaultReviewText(result);
+  }catch(error){
+    output.innerHTML='⚠️ '+escapeHtml(error.message || 'Live market check failed. Please try again later.');
+  }finally{
+    button.disabled=false;
+    button.textContent='Check Live Market';
+  }
+}
+
+async function verifyTradeWithAI(){
+  const button=document.getElementById('tradeAiBtn');
+  const output=document.getElementById('tradeAiOutput');
+  const combined=[...yourTrade,...theirTrade];
+  const unique=[...new Map(combined.map(c=>[c.id,c])).values()];
+
+  output.style.display='block';
+
+  if(yourTrade.length===0 || theirTrade.length===0){
+    output.innerHTML='Add cards to both sides before using AI verification.';
+    return;
+  }
+
+  if(unique.length>6){
+    output.innerHTML='<strong>Trade too large for live verification.</strong><br>'+
+      'To protect the free live-search allowance, AI verification is limited to 6 unique cards per trade.';
+    return;
+  }
+
+  button.disabled=true;
+  button.textContent='Verifying...';
+  output.innerHTML='🔎 Checking the cards in this trade against fresh exact-card evidence...';
+
+  try{
+    const results=[];
+    for(const card of unique){
+      results.push({card:card,result:await requestVaultReview(card)});
+    }
+
+    const flagged=results.filter(x=>x.result.verdict==='VALUE_REVIEW_RECOMMENDED');
+    const limited=results.filter(x=>x.result.verdict==='LIMITED_EVIDENCE');
+    const capped=results.filter(x=>x.result.verdict==='DAILY_LIMIT');
+
+    if(flagged.length){
+      output.innerHTML=
+        '<strong>⚠️ Trade needs manual value review</strong><br>'+
+        flagged.map(x=>escapeHtml(x.card.name)).join(', ')+
+        ' '+(flagged.length===1?'has':'have')+
+        ' fresh evidence that may materially change the stored value. '+
+        'The normal FAIR/UNFAIR result should not be relied on until reviewed.';
+    }else if(capped.length){
+      output.innerHTML=
+        '<strong>Partial verification only</strong><br>'+
+        'The free daily live-check allowance was reached before every card could be checked.';
+    }else if(limited.length){
+      output.innerHTML=
+        '<strong>✓ No conflicting market signal found</strong><br>'+
+        'No card produced strong evidence that its stored value is materially wrong. '+
+        limited.length+' card'+(limited.length===1?' had':'s had')+
+        ' limited exact sold-price evidence, so treat the trade result as a collector estimate rather than a guaranteed sale price.';
+    }else{
+      output.innerHTML=
+        '<strong>✓ AI market verification passed</strong><br>'+
+        'No checked card shows a material conflict with its stored Vault value. '+
+        'The FAIR/UNFAIR result can be used as a value guide.';
+    }
+  }catch(error){
+    output.innerHTML='⚠️ '+escapeHtml(error.message || 'Trade verification failed.');
+  }finally{
+    button.disabled=false;
+    button.textContent='✨ AI Verify This Trade';
+  }
+}
+
+
+/* TRADE SEARCH */
+
+function searchTradeCards(side){
+
+  const input=document.getElementById(side+'Search');
+
+  const results=findCards(input.value);
+
+  const box=document.getElementById(side+'SearchResults');
+
+  if(!input.value.trim()){
+
+    box.innerHTML='';
+    return;
+  }
+
+  if(!results.length){
+
+    box.innerHTML=
+      '<div class="empty">No matching card found.</div>';
+
+    return;
+  }
+
+  box.innerHTML=results.map(card=>`
+
+    <div class="result-row"
+      onclick="addTradeCard(
+        '${side}',
+        '${safe(card.id)}'
+      )">
+
+      <div>
+
+        <div class="card-name">
+          ${escapeHtml(card.name)}
+        </div>
+
+        <div class="meta">
+          ${escapeHtml(card.season)}
+          • ${escapeHtml(card.category)}
+          • #${escapeHtml(card.number)}
+        </div>
+
+      </div>
+
+      <div class="price">
+        ${displayValue(card)}
+      </div>
+
+    </div>
+
+  `).join('');
+}
+
+
+function addTradeCard(side,id){
+
+  const card=cards.find(c=>c.id===id);
+
+  if(!card) return;
+
+  const list=
+    side==='your'
+    ? yourTrade
+    : theirTrade;
+
+  if(list.some(c=>c.id===id)) return;
+
+  list.push(card);
+
+  document.getElementById(side+'Search').value='';
+
+  document.getElementById(
+    side+'SearchResults'
+  ).innerHTML='';
+
+  renderTrade();
+}
+
+
+function removeTradeCard(side,id){
+
+  if(side==='your'){
+
+    yourTrade=
+      yourTrade.filter(c=>c.id!==id);
+
+  }else{
+
+    theirTrade=
+      theirTrade.filter(c=>c.id!==id);
+
+  }
+
+  renderTrade();
+}
+
+
+function clearTrade(){
+
+  yourTrade=[];
+  theirTrade=[];
+
+  document.getElementById('yourSearch').value='';
+  document.getElementById('theirSearch').value='';
+
+  document.getElementById('yourSearchResults').innerHTML='';
+  document.getElementById('theirSearchResults').innerHTML='';
+
+  renderTrade();
+}
+
+
+function renderTrade(){
+
+  renderTradeSide('your',yourTrade);
+  renderTradeSide('their',theirTrade);
+
+  const yourTotal=tradeTotal(yourTrade);
+  const theirTotal=tradeTotal(theirTrade);
+
+  const yourVerifiedCount=
+    yourTrade.filter(card=>card.tradeEligible===true).length;
+
+  const theirVerifiedCount=
+    theirTrade.filter(card=>card.tradeEligible===true).length;
+
+  document.getElementById('yourTotal').textContent=
+    yourTrade.length===0
+      ? '—'
+      : yourVerifiedCount===0
+        ? 'No usable values'
+        : money(yourTotal);
+
+  document.getElementById('theirTotal').textContent=
+    theirTrade.length===0
+      ? '—'
+      : theirVerifiedCount===0
+        ? 'No usable values'
+        : money(theirTotal);
+
+  document.getElementById('yourCount').textContent=
+    yourTrade.length+
+    (yourTrade.length===1?' card':' cards');
+
+  document.getElementById('theirCount').textContent=
+    theirTrade.length+
+    (theirTrade.length===1?' card':' cards');
+
+  const allYourCardsVerified=
+    yourTrade.length>0 &&
+    yourTrade.every(card=>card.tradeEligible===true);
+
+  const allTheirCardsVerified=
+    theirTrade.length>0 &&
+    theirTrade.every(card=>card.tradeEligible===true);
+
+  if(yourTrade.length===0 || theirTrade.length===0){
+    calculateTrade(0,0);
+    return;
+  }
+
+  if(!allYourCardsVerified || !allTheirCardsVerified){
+
+    const box=document.getElementById('tradeResult');
+
+    box.className='trade-result waiting';
+
+    box.innerHTML=
+      '⚠️ TRADE CANNOT BE FULLY VALUED'+
+      '<div class="result-detail">'+
+      'One or more cards have Insufficient Market Data or a Market Value Under Review. '+
+      'These cards are excluded from verified totals, so a FAIR/UNFAIR rating cannot be issued.'+
+      '</div>';
+
+    return;
+  }
+
+  calculateTrade(yourTotal,theirTotal);
+}
+
+
+function renderTradeSide(side,list){
+
+  const box=document.getElementById(side+'Cards');
+
+  if(!list.length){
+
+    box.innerHTML=
+      '<div class="empty">No cards added yet.</div>';
+
+    return;
+  }
+
+  box.innerHTML=list.map(card=>`
+
+    <div class="trade-card">
+
+      <div>
+
+        <strong>${escapeHtml(card.name)}</strong>
+
+        <div class="meta">
+          ${escapeHtml(card.season)}
+          • ${escapeHtml(card.category)}
+          • #${escapeHtml(card.number)}
+        </div>
+
+      </div>
+
+      <div style="text-align:right">
+
+        <strong>${displayValue(card)}</strong>
+
+        <div class="remove"
+          onclick="removeTradeCard(
+            '${side}',
+            '${safe(card.id)}'
+          )">
+          Remove
+        </div>
+
+      </div>
+
+    </div>
+
+  `).join('');
+}
+
+
+    function tradeTotal(list){
+
+  return list
+    .filter(card =>
+      card.tradeEligible === true &&
+      card.marketValue !== null
+    )
+    .reduce(
+      (sum,card) => sum + Number(card.marketValue),
+      0
+    );
+
+}
+
+
+/* TRADE FAIRNESS */
+
+function calculateTrade(yourTotal,theirTotal){
+
+  const box=document.getElementById('tradeResult');
+
+  if(yourTotal===0 || theirTotal===0){
+
+    box.className='trade-result waiting';
+
+    box.innerHTML='Add cards to both sides';
+
+    return;
+  }
+
+  const amount=
+    Math.abs(yourTotal-theirTotal);
+
+  const difference=
+    amount/Math.max(yourTotal,theirTotal);
+
+  const percent=
+    (difference*100).toFixed(1);
+
+  let advantage='';
+
+  if(yourTotal<theirTotal){
+
+    advantage=
+      'Their cards are worth <strong>'+
+      money(amount)+
+      '</strong> more.<br>'+
+      'You would be receiving more value in this trade.';
+
+  }
+
+  else if(yourTotal>theirTotal){
+
+    advantage=
+      'Your cards are worth <strong>'+
+      money(amount)+
+      '</strong> more.<br>'+
+      'They would be receiving more value in this trade.';
+
+  }
+
+  else{
+
+    advantage=
+      'Both sides have the same estimated value.';
+
+  }
+
+
+  if(difference<=0.10){
+
+    box.className='trade-result fair';
+
+    box.innerHTML=
+      '🟢 FAIR TRADE'+
+      '<div class="result-detail">'+
+      percent+'% value difference<br>'+
+      advantage+
+      '</div>';
+
+  }
+
+  else if(difference<=0.25){
+
+    box.className='trade-result slight';
+
+    box.innerHTML=
+      '🟡 SLIGHTLY UNEVEN'+
+      '<div class="result-detail">'+
+      percent+'% value difference<br>'+
+      advantage+
+      '</div>';
+
+  }
+
+  else{
+
+    box.className='trade-result unfair';
+
+    box.innerHTML=
+      '🔴 UNFAIR BY VALUE'+
+      '<div class="result-detail">'+
+      percent+'% value difference<br>'+
+      advantage+
+      '</div>';
+  }
+}
+
+
+/* SAFETY */
+
+function escapeHtml(value){
+
+  return String(value||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+
+function safe(value){
+
+  return String(value||'')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'");
+}
+
+</script>
+
+</body>
+</html>
