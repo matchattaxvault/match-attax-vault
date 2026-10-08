@@ -106,7 +106,7 @@ jobs:
               )
 
               card["marketValue"] = price
-              card["valuationStatus"] = "insufficient"
+              card["valuationStatus"] = "estimate"
               card["tradeEligible"] = False
               card["confidence"] = "Estimate"
 
