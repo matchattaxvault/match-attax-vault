@@ -1172,8 +1172,16 @@ function usableValue(card){
   if(card.valuationStatus !== 'hold' && card.provisionalValue !== null && card.provisionalValue !== undefined && Number.isFinite(Number(card.provisionalValue))) return Number(card.provisionalValue);
   return null;
 }
-function tradeValue(card){ return usableValue(card); }
-function displayValue(card){
+function tradeValue(card){
+  if (
+    card.valuationStatus === 'estimate' &&
+    card.marketValue !== null &&
+    Number.isFinite(Number(card.marketValue))
+  ) {
+    return Number(card.marketValue);
+  }
+  return usableValue(card);
+}function displayValue(card){
   if(card.valuationStatus === 'verified' &&
      card.marketValue !== null){
     return money(card.marketValue);
