@@ -22,26 +22,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Google Sheets libraries
+      - name: Install dependencies
         run: pip install google-auth requests
 
-      - name: Read private Google Sheet and sync prices
+      - name: Check Google Sheet pricing evidence
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: |
           python - <<'PY'
-          import csv
-          import io
           import json
           import os
           import pathlib
+          from collections import defaultdict
+          from datetime import datetime
           import requests
           from google.oauth2 import service_account
           from google.auth.transport.requests import Request
 
           SHEET_ID = "1nDSwSESkuvCb2FUYPdMovynhv5n9tWxN8GkfghuBm_g"
-          SHEET_RANGE = "'ALL CARDS'!A:P"
-          path = pathlib.Path("cards.json")
 
           credentials = service_account.Credentials.from_service_account_info(
               json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]),
@@ -49,92 +47,73 @@ jobs:
           )
           credentials.refresh(Request())
 
-          response = requests.get(
-              f"https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/{SHEET_RANGE}",
-              headers={"Authorization": f"Bearer {credentials.token}"},
-              timeout=30
-          )
-          response.raise_for_status()
-          rows = response.json().get("values", [])
-          if len(rows) < 2:
-              raise RuntimeError("Sheet has no card data. Existing database preserved.")
+          def read_sheet(tab):
+              response = requests.get(
+                  f"https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/{requests.utils.quote(tab, safe='')}",
+                  headers={"Authorization": f"Bearer {credentials.token}"},
+                  timeout=30
+              )
+              response.raise_for_status()
+              rows = response.json().get("values", [])
+              if not rows:
+                  raise RuntimeError(f"Missing or empty tab: {tab}")
+              headers = [str(h).strip() for h in rows[0]]
+              return [
+                  dict(zip(headers, row))
+                  for row in rows[1:]
+                  if any(str(value).strip() for value in row)
+              ]
 
-          headers = [h.strip() for h in rows[0]]
-          required = ["Card ID", "Market Value ₹", "Valuation Confidence",
-                      "Evidence Type", "Last Market Check"]
-          if any(h not in headers for h in required):
-              raise RuntimeError("Unexpected sheet columns. Existing database preserved.")
+          cards_sheet = read_sheet("'ALL CARDS'!A:P")
+          sales_sheet = read_sheet("'SOLD SALES EVIDENCE'!A:I")
 
-          records = []
-          for row in rows[1:]:
-              record = dict(zip(headers, row))
-              if record.get("Card ID"):
-                  records.append(record)
+          cards_path = pathlib.Path("cards.json")
+          cards = json.loads(cards_path.read_text(encoding="utf-8"))
 
-          sheet_by_id = {r["Card ID"].strip(): r for r in records}
-
-          cards = json.loads(path.read_text(encoding="utf-8"))
           if not isinstance(cards, list):
-              raise RuntimeError("Unexpected cards.json structure. No changes made.")
+              raise RuntimeError("Unexpected cards.json format")
 
-          updated = 0
-          for card in cards:
-              record = sheet_by_id.get(str(card.get("id", "")).strip())
-              if not record:
-                  continue
+          sales_by_id = defaultdict(list)
 
-              # Sync only explicit, evidence-backed completed sales.
-              # Never promote estimates or generic price guides to verified.
-              evidence = record.get("Evidence Type", "").lower()
-              confidence = record.get("Valuation Confidence", "").lower()
-              price_text = record.get("Market Value ₹", "").replace(",", "").replace("₹", "").strip()
-              checked = record.get("Last Market Check", "").strip()
-
-              if not (
-                  "completed sale" in evidence
-                  and confidence in ("verified", "high")
-                  and checked
-                  and price_text
-              ):
-                  continue
+          for sale in sales_sheet:
+              card_id = sale.get("Card ID", "").strip()
+              evidence = sale.get("Evidence", "").strip().lower()
+              url = sale.get("URL", "").strip()
+              amount = sale.get("Sold USD", "").strip()
 
               try:
-                  price = float(price_text)
+                  value = float(amount)
               except ValueError:
                   continue
 
-              if not (0 < price < 10000000):
-                  continue
+              if (
+                  card_id
+                  and evidence == "reported completed sale"
+                  and url.startswith("https://")
+                  and value > 0
+              ):
+                  sales_by_id[card_id].append(sale)
 
-              if card.get("marketValue") != price:
-                  card["marketValue"] = price
-                  updated += 1
+          matched = 0
+          pending = 0
 
-              card["valuationStatus"] = "verified"
-              card["tradeEligible"] = True
-              card["confidence"] = record.get("Valuation Confidence")
-              card["evidenceType"] = record.get("Evidence Type")
-              card["lastMarketCheck"] = checked
+          for card in cards:
+              card_id = str(card.get("id", "")).strip()
+              sales = sales_by_id.get(card_id, [])
 
-          if updated:
-              path.write_text(
-                  json.dumps(cards, ensure_ascii=False, indent=2) + "\n",
-                  encoding="utf-8"
-              )
+              if sales:
+                  matched += 1
+                  print(
+                      f"{card_id}: {len(sales)} reported sales; "
+                      "price not automatically changed"
+                  )
+                  pending += 1
 
-          print(f"Read {len(records)} sheet rows.")
-          print(f"Updated prices for {updated} cards.")
-          print("Other card fields and Vault AI were not changed.")
+          print(f"Cards in database: {len(cards)}")
+          print(f"Rows in ALL CARDS: {len(cards_sheet)}")
+          print(f"Rows in SOLD SALES EVIDENCE: {len(sales_sheet)}")
+          print(f"Cards with matching reported sales: {matched}")
+          print(f"Cards awaiting stronger verification: {pending}")
+          print("Verified price changes: 0")
+          print("No existing prices, estimates, or Vault AI modified.")
           PY
-
-      - name: Commit verified price updates
-        run: |
-          if git diff --quiet -- cards.json; then
-            echo "No eligible price updates."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add cards.json
-          git commit -m "Sync verified Match Attax prices"
-          git push
