@@ -33,6 +33,7 @@ jobs:
           import os
           import pathlib
           import math
+          import time
           from datetime import datetime, timezone, timedelta
           import requests
           from google.oauth2 import service_account
@@ -45,9 +46,20 @@ jobs:
               json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]),
               scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"]
           )
-          credentials.refresh(Request())
+          for attempt in range(3):
+              try:
+                  credentials.refresh(Request())
+                  break
+              except Exception:
+                  if attempt == 2:
+                      raise
+                  time.sleep(5 * (attempt + 1))
 
-          response = requests.get(
+          from requests.adapters import HTTPAdapter
+          from urllib3.util.retry import Retry
+          session = requests.Session()
+          session.mount("https://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=2, status_forcelist=[429, 500, 502, 503, 504])))
+          response = session.get(
               f"https://sheets.googleapis.com/v4/spreadsheets/{SHEET_ID}/values/{RANGE}",
               headers={"Authorization": f"Bearer {credentials.token}"},
               timeout=30
@@ -130,6 +142,10 @@ jobs:
                   encoding="utf-8"
               )
 
+          checked_count = sum(card.get("valueDataChecked") == checked_on for card in cards)
+          if checked_count < 500:
+              raise RuntimeError(f"Health check failed: only {checked_count} cards received today\'s check date (expected at least 500).")
+          print(f"Health check passed: {checked_count} cards checked on {checked_on}")
           print(f"Sheet cards: {len(sheet_cards)}")
           print(f"Database cards: {len(cards)}")
           print(f"Cards updated: {changed}")
@@ -146,4 +162,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add cards.json
           git commit -m "Sync estimated Match Attax prices"
-          git push
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            if [ "$attempt" -eq 3 ]; then echo "Push failed after 3 attempts"; exit 1; fi
+            sleep $((attempt * 10))
+          done
