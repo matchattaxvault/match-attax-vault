@@ -1593,9 +1593,8 @@ ${card.valuationStatus === 'hold' ? `
 
       <div class="meta" style="margin-top:10px">
         ${
-          card.updated
-          ? 'Value reviewed: '+escapeHtml(card.updated)
-          : ''
+          (card.valueDataChecked ? 'Value data checked: '+escapeHtml(card.valueDataChecked)+'<br>' : '') +
+          (card.updated ? 'Value reviewed: '+escapeHtml(card.updated) : '')
         }
       </div>
 
