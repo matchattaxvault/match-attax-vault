@@ -1475,7 +1475,7 @@ else{
   <select id="db-condition-${safe(card.id)}" aria-label="Condition for ${escapeHtml(card.name)}" onchange="setDatabaseCondition('${safe(card.id)}',this.value,this)" style="max-width:150px;padding:6px;border-radius:7px;background:#152d29;color:white;border:1px solid #62877a">
     ${[['mint','Mint'],['near','Near Mint'],['excellent','Excellent'],['good','Good'],['damaged','Damaged']].map(([value,label])=>`<option value="${value}" ${((databaseConditions[card.id]||'near')===value)?'selected':''}>${label}</option>`).join('')}
   </select>
-  <div class="database-adjusted-value" style="margin-top:5px">${databaseConditionValue(card)}</div>
+  <div class="database-adjusted-value" style="margin-top:7px;font-size:1.3rem;font-weight:800;line-height:1.35">${databaseConditionValue(card)}</div>
   <div class="meta">Condition estimate only; stored value unchanged.</div>
 
 </td>
@@ -1642,7 +1642,7 @@ ${card.valuationStatus === 'hold' ? `
           <option value="0.65">Good — noticeable wear</option>
           <option value="0.35">Damaged — creases or tears</option>
         </select>
-        <div id="conditionEstimate" style="margin-top:10px" aria-live="polite"></div>
+        <div id="conditionEstimate" style="margin-top:10px;font-size:1.45rem;font-weight:800;line-height:1.35" aria-live="polite"></div>
         <div class="meta" style="margin-top:6px">Illustrative condition adjustments only; not verified resale prices. Stored values and trade calculations are unchanged.</div>
       </div>
 
@@ -2012,7 +2012,7 @@ function renderTradeSide(side,list){
 
       <div style="text-align:right">
 
-        <strong>${adjustedTradeValue(side,card)===null ? 'Value unavailable' : money(adjustedTradeValue(side,card))+' • Estimated'}</strong>
+        <strong style="font-size:1.3rem;line-height:1.35;display:block">${adjustedTradeValue(side,card)===null ? 'Value unavailable' : money(adjustedTradeValue(side,card))+' • Estimated'}</strong>
         <div class="meta" style="margin-top:5px">Condition</div>
         <select aria-label="Condition for ${escapeHtml(card.name)}" onchange="setTradeCondition('${side}','${safe(card.id)}',this.value)" style="max-width:145px;padding:6px;border-radius:7px;background:#152d29;color:white;border:1px solid #62877a">
           ${[['mint','Mint'],['near','Near Mint'],['excellent','Excellent'],['good','Good'],['damaged','Damaged']].map(([value,label])=>`<option value="${value}" ${((tradeConditions[side][card.id]||'near')===value)?'selected':''}>${label}</option>`).join('')}
