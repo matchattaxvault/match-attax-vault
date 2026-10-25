@@ -1507,6 +1507,20 @@ function searchValueCards(){
 }
 
 
+function updateConditionEstimate(id){
+  const card=cards.find(c=>c.id===id);
+  const select=document.getElementById('conditionSelect');
+  const output=document.getElementById('conditionEstimate');
+  if(!card||!select||!output) return;
+  const base=Number(card.marketValue ?? card.provisionalValue);
+  if(card.valuationStatus==='hold'||!Number.isFinite(base)||base<=0){
+    output.textContent='Condition-adjusted estimate unavailable';
+    return;
+  }
+  const factor=Number(select.value);
+  output.textContent='Your card estimated value: '+money(Math.round(base*factor*100)/100);
+}
+
 function selectValueCard(id){
 
   const card=cards.find(c=>c.id===id);
@@ -1585,6 +1599,19 @@ ${card.valuationStatus === 'hold' ? `
         <div id="vaultAiOutput" class="vault-ai-output"></div>
       </div>
 
+      <div style="margin-top:16px;padding:14px;border:1px solid rgba(128,128,128,.3);border-radius:12px">
+        <label for="conditionSelect" style="display:block;margin-bottom:8px;font-weight:700">Your card's condition</label>
+        <select id="conditionSelect" onchange="updateConditionEstimate('${safe(card.id)}')" style="width:100%;padding:10px;border-radius:8px;background:#152d29;color:#fff;border:1px solid #62877a">
+          <option value="1.15">Mint — almost perfect</option>
+          <option value="1" selected>Near Mint — minimal wear</option>
+          <option value="0.85">Excellent — minor wear</option>
+          <option value="0.65">Good — noticeable wear</option>
+          <option value="0.35">Damaged — creases or tears</option>
+        </select>
+        <div id="conditionEstimate" style="margin-top:10px" aria-live="polite"></div>
+        <div class="meta" style="margin-top:6px">Illustrative condition adjustments only; not verified resale prices. Stored values and trade calculations are unchanged.</div>
+      </div>
+
       <div class="meta" style="margin-top:15px">
         Card #${escapeHtml(card.number)}
         • Condition:
@@ -1601,6 +1628,7 @@ ${card.valuationStatus === 'hold' ? `
     </div>
 
   `;
+  updateConditionEstimate(id);
 }
 
 
