@@ -1331,7 +1331,7 @@ function setDatabaseCondition(id,condition,select){
   if(!Object.prototype.hasOwnProperty.call(conditionFactors,condition))return;
   databaseConditions[id]=condition;
   const cell=select.closest('td');
-  const value=cell&&cell.querySelector('.database-adjusted-value');
+  const value=cell&&cell.querySelector('.database-primary-value');
   const card=cards.find(c=>c.id===id);
   if(value&&card)value.textContent=databaseConditionValue(card);
 }
@@ -1466,7 +1466,7 @@ else{
 
       <td class="table-price">
 
-  ${displayValue(card)}
+  <div class="database-primary-value" style="font-size:1.3rem;font-weight:800;line-height:1.35">${databaseConditionValue(card)}</div>
 
   <div class="meta">
     ${valuationLabel(card)}
@@ -1475,8 +1475,7 @@ else{
   <select id="db-condition-${safe(card.id)}" aria-label="Condition for ${escapeHtml(card.name)}" onchange="setDatabaseCondition('${safe(card.id)}',this.value,this)" style="max-width:150px;padding:6px;border-radius:7px;background:#152d29;color:white;border:1px solid #62877a">
     ${[['mint','Mint'],['near','Near Mint'],['excellent','Excellent'],['good','Good'],['damaged','Damaged']].map(([value,label])=>`<option value="${value}" ${((databaseConditions[card.id]||'near')===value)?'selected':''}>${label}</option>`).join('')}
   </select>
-  <div class="database-adjusted-value" style="margin-top:7px;font-size:1.3rem;font-weight:800;line-height:1.35">${databaseConditionValue(card)}</div>
-  <div class="meta">Condition estimate only; stored value unchanged.</div>
+  <div class="meta" style="margin-top:7px">Condition estimate only; stored value unchanged.</div>
 
 </td>
 
