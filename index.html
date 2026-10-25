@@ -1320,6 +1320,22 @@ function populateFilters(){
 }
 
 
+const databaseConditions={};
+function databaseConditionValue(card){
+  const base=tradeValue(card);
+  if(base===null)return 'Value unavailable';
+  const factor=conditionFactors[databaseConditions[card.id]||'near']||1;
+  return money(Math.round(base*factor*100)/100)+' • Estimated';
+}
+function setDatabaseCondition(id,condition,select){
+  if(!Object.prototype.hasOwnProperty.call(conditionFactors,condition))return;
+  databaseConditions[id]=condition;
+  const cell=select.closest('td');
+  const value=cell&&cell.querySelector('.database-adjusted-value');
+  const card=cards.find(c=>c.id===id);
+  if(value&&card)value.textContent=databaseConditionValue(card);
+}
+
 function renderDatabase(){
 
   const q=
@@ -1455,6 +1471,12 @@ else{
   <div class="meta">
     ${valuationLabel(card)}
   </div>
+  <label class="meta" style="display:block;margin-top:8px" for="db-condition-${safe(card.id)}">Your card condition</label>
+  <select id="db-condition-${safe(card.id)}" aria-label="Condition for ${escapeHtml(card.name)}" onchange="setDatabaseCondition('${safe(card.id)}',this.value,this)" style="max-width:150px;padding:6px;border-radius:7px;background:#152d29;color:white;border:1px solid #62877a">
+    ${[['mint','Mint'],['near','Near Mint'],['excellent','Excellent'],['good','Good'],['damaged','Damaged']].map(([value,label])=>`<option value="${value}" ${((databaseConditions[card.id]||'near')===value)?'selected':''}>${label}</option>`).join('')}
+  </select>
+  <div class="database-adjusted-value" style="margin-top:5px">${databaseConditionValue(card)}</div>
+  <div class="meta">Condition estimate only; stored value unchanged.</div>
 
 </td>
 
