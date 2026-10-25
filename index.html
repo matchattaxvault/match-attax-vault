@@ -1545,14 +1545,18 @@ function updateConditionEstimate(id){
   const card=cards.find(c=>c.id===id);
   const select=document.getElementById('conditionSelect');
   const output=document.getElementById('conditionEstimate');
-  if(!card||!select||!output) return;
-  const base=Number(card.marketValue ?? card.provisionalValue);
-  if(card.valuationStatus==='hold'||!Number.isFinite(base)||base<=0){
+  const headline=document.getElementById('selectedConditionPrice');
+  if(!card||!select||!output||!headline) return;
+  const base=tradeValue(card);
+  if(base===null||!Number.isFinite(base)||base<=0){
+    headline.textContent=displayValue(card);
     output.textContent='Condition-adjusted estimate unavailable';
     return;
   }
   const factor=Number(select.value);
-  output.textContent='Your card estimated value: '+money(Math.round(base*factor*100)/100);
+  const adjusted=money(Math.round(base*factor*100)/100);
+  headline.textContent=adjusted+' • Estimated';
+  output.textContent='Original near-mint reference value: '+money(base);
 }
 
 function selectValueCard(id){
@@ -1585,7 +1589,7 @@ function selectValueCard(id){
         ${card.finish ? ' • '+escapeHtml(card.finish) : ''}
       </div>
 
-      <div class="big-price">
+      <div class="big-price" id="selectedConditionPrice" aria-live="polite">
   ${displayValue(card)}
 </div>
 
@@ -1642,7 +1646,7 @@ ${card.valuationStatus === 'hold' ? `
           <option value="0.65">Good — noticeable wear</option>
           <option value="0.35">Damaged — creases or tears</option>
         </select>
-        <div id="conditionEstimate" style="margin-top:10px;font-size:1.45rem;font-weight:800;line-height:1.35" aria-live="polite"></div>
+        <div id="conditionEstimate" class="meta" style="margin-top:10px" aria-live="polite"></div>
         <div class="meta" style="margin-top:6px">Illustrative condition adjustments only; not verified resale prices. Stored values and trade calculations are unchanged.</div>
       </div>
 
