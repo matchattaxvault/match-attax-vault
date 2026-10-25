@@ -1092,6 +1092,18 @@
 let cards=[];
 let yourTrade=[];
 let theirTrade=[];
+const tradeConditions={your:{},their:{}};
+const conditionFactors={mint:1.15,near:1,excellent:0.85,good:0.65,damaged:0.35};
+function adjustedTradeValue(side,card){
+  const base=tradeValue(card);
+  return base===null ? null : Math.round(base*(conditionFactors[tradeConditions[side][card.id]||'near']||1)*100)/100;
+}
+function setTradeCondition(side,id,value){
+  if(!['your','their'].includes(side)||!Object.prototype.hasOwnProperty.call(conditionFactors,value))return;
+  tradeConditions[side][id]=value;
+  renderTrade();
+}
+
 
 
 /* FAST NON-BLOCKING LIVE DATABASE */
@@ -1826,6 +1838,7 @@ function addTradeCard(side,id){
   if(list.some(c=>c.id===id)) return;
 
   list.push(card);
+  tradeConditions[side][id]='near';
 
   document.getElementById(side+'Search').value='';
 
@@ -1838,6 +1851,7 @@ function addTradeCard(side,id){
 
 
 function removeTradeCard(side,id){
+  delete tradeConditions[side][id];
 
   if(side==='your'){
 
@@ -1859,6 +1873,8 @@ function clearTrade(){
 
   yourTrade=[];
   theirTrade=[];
+  tradeConditions.your={};
+  tradeConditions.their={};
 
   document.getElementById('yourSearch').value='';
   document.getElementById('theirSearch').value='';
@@ -1875,8 +1891,8 @@ function renderTrade(){
   renderTradeSide('your',yourTrade);
   renderTradeSide('their',theirTrade);
 
-  const yourTotal=tradeTotal(yourTrade);
-  const theirTotal=tradeTotal(theirTrade);
+  const yourTotal=tradeTotal('your',yourTrade);
+  const theirTotal=tradeTotal('their',theirTrade);
 
   const yourVerifiedCount=
     yourTrade.filter(card=>tradeValue(card)!==null).length;
@@ -1936,6 +1952,7 @@ function renderTrade(){
   }
 
   calculateTrade(yourTotal,theirTotal);
+  document.getElementById('tradeResult').innerHTML += '<div class="result-detail">Condition-adjusted trade estimates use illustrative multipliers, not verified condition-specific sale prices.</div>';
   if([...yourTrade,...theirTrade].some(card=>card.valuationStatus!=='verified')){
     const result=document.getElementById('tradeResult');
     result.innerHTML += '<div class="result-detail">⚠️ Includes provisional collector estimates, not confirmed resale prices.</div>';
@@ -1973,7 +1990,11 @@ function renderTradeSide(side,list){
 
       <div style="text-align:right">
 
-        <strong>${displayValue(card)}</strong>
+        <strong>${adjustedTradeValue(side,card)===null ? 'Value unavailable' : money(adjustedTradeValue(side,card))+' • Estimated'}</strong>
+        <div class="meta" style="margin-top:5px">Condition</div>
+        <select aria-label="Condition for ${escapeHtml(card.name)}" onchange="setTradeCondition('${side}','${safe(card.id)}',this.value)" style="max-width:145px;padding:6px;border-radius:7px;background:#152d29;color:white;border:1px solid #62877a">
+          ${[['mint','Mint'],['near','Near Mint'],['excellent','Excellent'],['good','Good'],['damaged','Damaged']].map(([value,label])=>`<option value="${value}" ${((tradeConditions[side][card.id]||'near')===value)?'selected':''}>${label}</option>`).join('')}
+        </select>
 
         <div class="remove"
           onclick="removeTradeCard(
@@ -1991,8 +2012,8 @@ function renderTradeSide(side,list){
 }
 
 
-    function tradeTotal(list){
-  return list.reduce((sum,card)=>sum+(tradeValue(card) ?? 0),0);
+    function tradeTotal(side,list){
+  return list.reduce((sum,card)=>sum+(adjustedTradeValue(side,card) ?? 0),0);
 }
 
 /* TRADE FAIRNESS */
