@@ -1,0 +1,19 @@
+name: TEST ONLY - Failure Email Notification
+
+on:
+  push:
+    paths:
+      - '.github/workflows/notification-failure-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notification-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Intentional failure for notification testing
+        run: |
+          echo 'TEST ONLY: deliberate failure to check GitHub Actions email notifications.'
+          exit 1
