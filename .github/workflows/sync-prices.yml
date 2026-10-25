@@ -33,6 +33,7 @@ jobs:
           import os
           import pathlib
           import math
+          from datetime import datetime, timezone, timedelta
           import requests
           from google.oauth2 import service_account
           from google.auth.transport.requests import Request
@@ -84,6 +85,7 @@ jobs:
               raise RuntimeError("Unexpected cards.json format.")
 
           changed = 0
+          checked_on = datetime.now(timezone(timedelta(hours=5, minutes=30))).date().isoformat()
 
           for card in cards:
               record = sheet_cards.get(str(card.get("id", "")).strip())
@@ -97,6 +99,8 @@ jobs:
               )
               if price is None:
                   continue
+
+              card["valueDataChecked"] = checked_on
 
               before = (
                   card.get("marketValue"),
@@ -120,7 +124,7 @@ jobs:
               if before != after:
                   changed += 1
 
-          if changed:
+          if changed or any(card.get("valueDataChecked") == checked_on for card in cards):
               path.write_text(
                   json.dumps(cards, ensure_ascii=False, indent=2) + "\n",
                   encoding="utf-8"
