@@ -698,6 +698,7 @@
   <div class="brand" onclick="showPage('home')">
    <img src="https://drive.google.com/thumbnail?id=1Y4tq97mb32ZVbnUzQ6MruHKokjtVNmvU&sz=w300"
      alt="Match Attax Vault"
+     decoding="async" fetchpriority="low" width="180" height="55"
      style="height:55px;width:auto;display:block;">
   </div>
 
@@ -1123,7 +1124,7 @@ async function fetchVaultCardsOnce(timeoutMs=30000){
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try{
-    const response = await fetch(VAULT_API, {signal:controller.signal, cache:'no-cache'});
+    const response = await fetch(VAULT_API, {signal:controller.signal, cache:'default'});
     if(!response.ok) throw new Error('Database connection failed: HTTP '+response.status);
     const data = await response.json();
     if(!Array.isArray(data) || data.length===0) throw new Error('Database returned no cards');
@@ -1161,7 +1162,12 @@ async function loadVaultCards(){
   console.error('Vault database:',lastError);
 }
 
-loadVaultCards();
+// Paint the homepage before starting JSON parsing and database setup.
+if('requestIdleCallback' in window){
+  requestIdleCallback(()=>loadVaultCards(),{timeout:1200});
+}else{
+  setTimeout(loadVaultCards,150);
+}
 
 
 /* NAVIGATION */
