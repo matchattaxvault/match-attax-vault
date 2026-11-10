@@ -777,7 +777,7 @@
 
       <input id="dbSearch"
         placeholder="Search player, team, card number or ID..."
-        oninput="renderDatabase()">
+        oninput="scheduleVaultSearch('database',renderDatabase)">
 
       <select id="seasonFilter" onchange="renderDatabase()">
         <option value="">All Seasons</option>
@@ -845,7 +845,7 @@
     <input id="valueSearch"
       class="search-bar"
       placeholder="Try: Lamine Yamal, Salah, 100 Club, BE-3..."
-      oninput="searchValueCards()">
+      oninput="scheduleVaultSearch('value',searchValueCards)">
 
     <div id="valueResults" class="results"></div>
 
@@ -890,7 +890,7 @@
 
       <input id="yourSearch"
         placeholder="Search card to add..."
-        oninput="searchTradeCards('your')">
+        oninput="scheduleVaultSearch('your',()=>searchTradeCards('your'))">
 
       <div id="yourSearchResults" class="results"></div>
 
@@ -912,7 +912,7 @@
 
       <input id="theirSearch"
         placeholder="Search card to add..."
-        oninput="searchTradeCards('their')">
+        oninput="scheduleVaultSearch('their',()=>searchTradeCards('their'))">
 
       <div id="theirSearchResults" class="results"></div>
 
@@ -1081,6 +1081,20 @@
 <script>
 
 let cards=[];
+const vaultSearchTimers=Object.create(null);
+const vaultSearchIndex=new WeakMap();
+function scheduleVaultSearch(key,callback){
+  clearTimeout(vaultSearchTimers[key]);
+  vaultSearchTimers[key]=setTimeout(callback,110);
+}
+function vaultSearchText(card){
+  let text=vaultSearchIndex.get(card);
+  if(text===undefined){
+    text=[card.id,card.name,card.team,card.season,card.number,card.category,card.finish].join(' ').toLowerCase();
+    vaultSearchIndex.set(card,text);
+  }
+  return text;
+}
 let yourTrade=[];
 let theirTrade=[];
 const tradeConditions={your:{},their:{}};
@@ -1131,7 +1145,7 @@ async function loadVaultCards(){
       document.getElementById('teamStat').textContent=teams.length;
       badge.textContent='● LIVE CARD DATABASE';
       populateFilters();
-      renderDatabase();
+      if(document.getElementById('database').classList.contains('active')) renderDatabase();
       renderTrade();
       return;
     }catch(error){
@@ -1161,6 +1175,7 @@ function showPage(id){
     .forEach(b=>b.classList.remove('active'));
 
   document.getElementById(id).classList.add('active');
+  if(id==='database' && cards.length) renderDatabase();
 
   const nav=document.getElementById('nav-'+id);
 
@@ -1244,15 +1259,7 @@ function findCards(query){
 
   return cards.filter(card=>{
 
-    const text=[
-      card.id,
-      card.name,
-      card.team,
-      card.season,
-      card.number,
-      card.category,
-      card.finish
-    ].join(' ').toLowerCase();
+    const text=vaultSearchText(card);
 
     return text.includes(query);
 
@@ -1345,14 +1352,7 @@ const sort=
   document.getElementById('sortFilter')?.value || 'number';
   let filtered=cards.filter(card=>{
 
-    const searchText=[
-      card.id,
-      card.name,
-      card.team,
-      card.season,
-      card.number,
-      card.category
-    ].join(' ').toLowerCase();
+    const searchText=vaultSearchText(card);
 
     return (!q || searchText.includes(q)) &&
            (!season || card.season===season) &&
