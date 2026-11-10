@@ -1131,7 +1131,8 @@ async function loadVaultCards(){
       document.getElementById('teamStat').textContent=teams.length;
       badge.textContent='● LIVE CARD DATABASE';
       populateFilters();
-      renderDatabase();
+      // Avoid constructing hundreds of table rows while the homepage is visible.
+      if(document.getElementById('database').classList.contains('active')) renderDatabase();
       renderTrade();
       return;
     }catch(error){
@@ -1161,6 +1162,7 @@ function showPage(id){
     .forEach(b=>b.classList.remove('active'));
 
   document.getElementById(id).classList.add('active');
+  if(id==='database' && cards.length) renderDatabase();
 
   const nav=document.getElementById('nav-'+id);
 
