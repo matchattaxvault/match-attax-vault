@@ -51,18 +51,6 @@
       color:var(--text);
     }
 
-    /* Keep below-the-fold homepage sections out of the first paint. */
-    #home .new-home-tools,
-    #home .new-home-community{
-      content-visibility:auto;
-      contain-intrinsic-size:auto 320px;
-    }
-    @media(max-width:800px){
-      .topbar{backdrop-filter:none;-webkit-backdrop-filter:none}
-      #home .new-home-showcase{box-shadow:0 8px 22px rgba(0,0,0,.16)}
-      #home .new-home-tools{contain-intrinsic-size:auto 700px}
-    }
-
     /* HEADER */
 
     .topbar{
@@ -710,7 +698,6 @@
   <div class="brand" onclick="showPage('home')">
    <img src="https://drive.google.com/thumbnail?id=1Y4tq97mb32ZVbnUzQ6MruHKokjtVNmvU&sz=w300"
      alt="Match Attax Vault"
-     decoding="async" fetchpriority="low" width="180" height="55"
      style="height:55px;width:auto;display:block;">
   </div>
 
@@ -790,7 +777,7 @@
 
       <input id="dbSearch"
         placeholder="Search player, team, card number or ID..."
-        oninput="scheduleVaultSearch('database',renderDatabase)">
+        oninput="renderDatabase()">
 
       <select id="seasonFilter" onchange="renderDatabase()">
         <option value="">All Seasons</option>
@@ -858,7 +845,7 @@
     <input id="valueSearch"
       class="search-bar"
       placeholder="Try: Lamine Yamal, Salah, 100 Club, BE-3..."
-      oninput="scheduleVaultSearch('value',searchValueCards)">
+      oninput="searchValueCards()">
 
     <div id="valueResults" class="results"></div>
 
@@ -903,7 +890,7 @@
 
       <input id="yourSearch"
         placeholder="Search card to add..."
-        oninput="scheduleVaultSearch('your',()=>searchTradeCards('your'))">
+        oninput="searchTradeCards('your')">
 
       <div id="yourSearchResults" class="results"></div>
 
@@ -925,7 +912,7 @@
 
       <input id="theirSearch"
         placeholder="Search card to add..."
-        oninput="scheduleVaultSearch('their',()=>searchTradeCards('their'))">
+        oninput="searchTradeCards('their')">
 
       <div id="theirSearchResults" class="results"></div>
 
@@ -1094,20 +1081,6 @@
 <script>
 
 let cards=[];
-const vaultSearchTimers=Object.create(null);
-const vaultSearchIndex=new WeakMap();
-function scheduleVaultSearch(key,callback){
-  clearTimeout(vaultSearchTimers[key]);
-  vaultSearchTimers[key]=setTimeout(callback,110);
-}
-function vaultSearchText(card){
-  let text=vaultSearchIndex.get(card);
-  if(text===undefined){
-    text=[card.id,card.name,card.team,card.season,card.number,card.category,card.finish].join(' ').toLowerCase();
-    vaultSearchIndex.set(card,text);
-  }
-  return text;
-}
 let yourTrade=[];
 let theirTrade=[];
 const tradeConditions={your:{},their:{}};
@@ -1136,7 +1109,7 @@ async function fetchVaultCardsOnce(timeoutMs=30000){
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try{
-    const response = await fetch(VAULT_API, {signal:controller.signal, cache:'default'});
+    const response = await fetch(VAULT_API, {signal:controller.signal, cache:'no-cache'});
     if(!response.ok) throw new Error('Database connection failed: HTTP '+response.status);
     const data = await response.json();
     if(!Array.isArray(data) || data.length===0) throw new Error('Database returned no cards');
@@ -1157,16 +1130,9 @@ async function loadVaultCards(){
       const teams=[...new Set(cards.map(c=>c.team).filter(Boolean))];
       document.getElementById('teamStat').textContent=teams.length;
       badge.textContent='● LIVE CARD DATABASE';
-      // Spread nonessential setup across idle frames to avoid a post-paint pause.
-      const finishSetup=()=>{
-        populateFilters();
-        if(document.getElementById('database').classList.contains('active')) renderDatabase();
-      };
-      if('requestIdleCallback' in window){
-        requestIdleCallback(finishSetup,{timeout:1500});
-      }else{
-        setTimeout(finishSetup,0);
-      }
+      populateFilters();
+      renderDatabase();
+      renderTrade();
       return;
     }catch(error){
       lastError=error;
@@ -1181,12 +1147,7 @@ async function loadVaultCards(){
   console.error('Vault database:',lastError);
 }
 
-// Paint the homepage before starting JSON parsing and database setup.
-if('requestIdleCallback' in window){
-  requestIdleCallback(()=>loadVaultCards(),{timeout:1200});
-}else{
-  setTimeout(loadVaultCards,150);
-}
+loadVaultCards();
 
 
 /* NAVIGATION */
@@ -1200,7 +1161,6 @@ function showPage(id){
     .forEach(b=>b.classList.remove('active'));
 
   document.getElementById(id).classList.add('active');
-  if(id==='database' && cards.length) renderDatabase();
 
   const nav=document.getElementById('nav-'+id);
 
@@ -1284,7 +1244,15 @@ function findCards(query){
 
   return cards.filter(card=>{
 
-    const text=vaultSearchText(card);
+    const text=[
+      card.id,
+      card.name,
+      card.team,
+      card.season,
+      card.number,
+      card.category,
+      card.finish
+    ].join(' ').toLowerCase();
 
     return text.includes(query);
 
@@ -1377,7 +1345,14 @@ const sort=
   document.getElementById('sortFilter')?.value || 'number';
   let filtered=cards.filter(card=>{
 
-    const searchText=vaultSearchText(card);
+    const searchText=[
+      card.id,
+      card.name,
+      card.team,
+      card.season,
+      card.number,
+      card.category
+    ].join(' ').toLowerCase();
 
     return (!q || searchText.includes(q)) &&
            (!season || card.season===season) &&
