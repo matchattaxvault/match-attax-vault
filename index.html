@@ -639,30 +639,55 @@
       }
     }
   
-/* Midnight blue premium homepage. Scoped to home only. */
-#home .vault-premium-hero{position:relative;isolation:isolate;overflow:hidden;min-height:490px;margin:-8px -8px 24px;padding:72px 26px;border:1px solid #29405a;border-radius:22px;background:radial-gradient(ellipse at 85% 12%,rgba(72,142,217,.19),transparent 46%),radial-gradient(ellipse at 15% 95%,rgba(57,110,167,.13),transparent 48%),linear-gradient(145deg,#060c16,#0b192b 65%,#101e31);box-shadow:0 24px 75px rgba(0,0,0,.3)}
-#home .vault-premium-hero:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(125deg,transparent 40%,rgba(130,183,242,.045) 50%,transparent 60%),repeating-linear-gradient(90deg,transparent 0 90px,rgba(255,255,255,.013) 91px 92px)}
-#home .vault-premium-hero:after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,#7ebeff,transparent)}
-#home .vault-watermark{position:absolute;top:24px;left:0;right:0;font-size:clamp(27px,6vw,76px);font-weight:900;letter-spacing:.1em;color:rgba(184,210,242,.035);white-space:nowrap;pointer-events:none}
-#home .hero-inner{position:relative;z-index:2;max-width:740px}
-#home .hero-badge{color:#b8d9ff;border:1px solid #31567b;background:rgba(75,137,207,.11);letter-spacing:.12em}
-#home .vault-crown{display:none}
-#home .hero h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(45px,7.5vw,84px);line-height:.99;letter-spacing:-.065em;font-weight:900;color:#f5f8ff;text-shadow:0 12px 30px rgba(0,0,0,.3)}
-#home .hero h1 span{color:#a8cfff}
-#home .vault-kicker{margin-top:20px;color:#9cb8d6;letter-spacing:.3em;font-size:10px;font-weight:800}
-#home .hero-tagline{color:#eef4fd;font-size:clamp(19px,2.6vw,25px);font-weight:700;margin-top:19px}
-#home .hero-description{color:#aabed3;max-width:530px}
-#home .hero-buttons{gap:12px}
-#home .hero-buttons button{border-radius:11px;padding:15px 20px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.18);transition:transform .2s,border-color .2s,background .2s}
-#home .hero-buttons button:hover{transform:translateY(-2px)}
-#home .hero-buttons .primary-btn{background:#dceaff;border:1px solid #f1f7ff;color:#10243a}
-#home .hero-buttons .secondary-btn{background:rgba(20,42,67,.8);border:1px solid #496a8c;color:#eaf3ff}
-#home .vault-orbit{position:absolute;top:27%;width:120px;height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #6084ac;border-radius:12px;background:linear-gradient(135deg,#182d45,#091523 75%);box-shadow:0 18px 45px rgba(0,0,0,.4);transform:rotate(-12deg);color:#c5dfff;opacity:.58}
-#home .vault-orbit span{font-size:58px;font-weight:900;line-height:1}#home .vault-orbit small{letter-spacing:.2em;font:800 11px Arial,sans-serif}#home .vault-orbit-left{left:5%}#home .vault-orbit-right{right:5%;transform:rotate(12deg);border-color:#6380a1}
-#home .vault-community{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:0 0 28px;padding:24px 28px;border:1px solid #2d4660;border-radius:17px;background:linear-gradient(110deg,#101e31,#0b1523);box-shadow:0 14px 40px rgba(0,0,0,.18)}
-#home .vault-community-eyebrow{color:#91b9e7;font-size:10px;font-weight:900;letter-spacing:.18em}#home .vault-community h2{margin:6px 0;font:800 20px Arial,sans-serif;color:#f0f5fc}#home .vault-community p{margin:0;color:#a9bed3;font-size:13px}#home .vault-community-actions{display:flex;gap:12px;flex-wrap:wrap}#home .vault-social{display:inline-block;padding:14px 18px;border-radius:10px;color:#fff;text-decoration:none;font-weight:800;font-size:13px;transition:transform .2s;box-shadow:0 6px 20px rgba(0,0,0,.18)}#home .vault-social:hover{transform:translateY(-2px)}#home .vault-discord{background:#4856a6;border:1px solid #7482ce}#home .vault-youtube{background:#a42d3c;border:1px solid #ce6671}
-#home .stat,#home .feature{background:linear-gradient(145deg,#102036,#0b192a);border-color:#2c4662;box-shadow:inset 0 1px rgba(255,255,255,.035)}#home .stat-number{color:#a8cfff}#home .feature:hover{border-color:#8dbaf0}
-@media(max-width:850px){#home .vault-orbit{opacity:.12;pointer-events:none}#home .vault-orbit-left{left:-45px}#home .vault-orbit-right{right:-45px}}@media(max-width:560px){#home .vault-premium-hero{padding:60px 16px;min-height:470px}#home .vault-community{padding:20px}#home .vault-community-actions{width:100%}#home .vault-social{flex:1;text-align:center}#home .vault-kicker{letter-spacing:.2em}}
+/* Entirely new editorial collector homepage, isolated from tool pages */
+#home{--nh-bg:#0b1624;--nh-line:#2a4058;--nh-ink:#eef5fc;--nh-muted:#9db3c9}
+#home .new-home-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center;padding:50px 0 40px}
+#home .new-home-copy{text-align:left;padding:15px 0}
+#home .hero-badge{display:inline-block;color:#b4d9fa;background:#122b43;border:1px solid #315575;font-size:11px;letter-spacing:.12em;border-radius:6px;padding:9px 12px;margin-bottom:28px}
+#home .new-home-eyebrow{color:#80b8eb;font-size:11px;font-weight:900;letter-spacing:.19em;margin-bottom:18px}
+#home .new-home-copy h1{font-size:clamp(47px,6.5vw,87px);line-height:1.02;letter-spacing:-.065em;margin:0;color:#f3f7fd;font-weight:950}
+#home .new-home-copy h1 span{color:#86bff2}
+#home .new-home-lead{font-size:clamp(19px,2.2vw,26px);font-weight:700;color:#e3edf9;margin:26px 0 10px}
+#home .new-home-detail{font-size:15px;line-height:1.8;color:#9fb5cb;max-width:480px;margin:0 0 27px}
+#home .new-home-actions{display:flex;gap:11px;flex-wrap:wrap}
+#home .new-home-actions button{padding:15px 19px;font-size:13px;font-weight:800;cursor:pointer;border-radius:7px;transition:transform .2s}
+#home .new-home-actions button:hover,#home .new-home-tools button:hover{transform:translateY(-3px)}
+#home .new-home-primary{background:#dcecff;color:#0a1c30;border:1px solid #dcecff}
+#home .new-home-outline{background:transparent;color:#e7f2ff;border:1px solid #55708c}
+#home .new-home-showcase{border:1px solid #3d5872;background:#0b1d30;box-shadow:16px 20px 0 rgba(30,55,78,.27),0 25px 60px rgba(0,0,0,.24);min-height:440px;display:flex;flex-direction:column;overflow:hidden}
+#home .new-home-showcase-head,#home .new-home-showcase-foot{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid #2b4561;color:#9dbbd8;font-size:10px;font-weight:800;letter-spacing:.15em}
+#home .new-home-showcase-head span:last-child{margin-left:auto}#home .new-home-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#78c9b1;margin-right:8px}
+#home .new-home-showcase-body{padding:30px 30px 22px;flex:1;background:linear-gradient(150deg,#132b42,#091624 80%)}
+#home .new-home-mark{font-weight:950;font-size:clamp(46px,6vw,78px);letter-spacing:-.09em;color:#dcecff;line-height:1}#home .new-home-mark span{font-size:10px;vertical-align:top;letter-spacing:0}
+#home .new-home-showcase-label{font-size:10px;letter-spacing:.22em;color:#7ca9d3;margin:19px 0 8px;font-weight:900}
+#home .new-home-showcase-title{font-size:clamp(24px,3vw,39px);line-height:1.1;font-weight:900;letter-spacing:-.04em;color:#eaf4ff}
+#home .new-home-mini-list{margin-top:25px;border-top:1px solid #39526a}
+#home .new-home-mini-list div{display:flex;align-items:center;gap:15px;padding:12px 0;border-bottom:1px solid #39526a;color:#85acd1;font-size:11px}
+#home .new-home-mini-list strong{font-size:13px;color:#e6f0fa;font-weight:700}#home .new-home-mini-list span{margin-left:auto;font-size:10px}
+#home .new-home-showcase-foot{border-bottom:0;border-top:1px solid #2b4561}
+#home .new-home-metrics{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #2d4560;background:#0c1d30;margin:12px 0 65px}
+#home .new-home-metrics>div{padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+#home .new-home-metrics>div+div{border-left:1px solid #2d4560}
+#home .new-home-metrics strong{font-size:29px;color:#c6e3ff}#home .new-home-metrics span{font-size:10px;letter-spacing:.12em;color:#a6bbcf}
+#home .new-home-section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+#home .new-home-section-head span,#home .new-home-community>div>span{font-size:10px;color:#83b7e9;letter-spacing:.2em;font-weight:900}
+#home .new-home-section-head h2,#home .new-home-community h2{font-size:clamp(25px,3.4vw,39px);line-height:1.15;letter-spacing:-.045em;margin:10px 0 0;color:#f1f6fd}
+#home .new-home-section-head p{font-size:13px;color:#a1b7cb}
+#home .new-home-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:60px}
+#home .new-home-tools button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-height:265px;background:#102338;border:1px solid #304c68;padding:23px;cursor:pointer;color:#eef5fc;border-radius:8px;transition:transform .2s,border-color .2s}
+#home .new-home-tools button:hover{border-color:#8cbce9}
+#home .new-home-tool-no{font-size:10px;color:#89b8e5;letter-spacing:.14em;font-weight:900}
+#home .new-home-tool-symbol{font-size:39px;color:#b8d9f8;margin:21px 0 13px}
+#home .new-home-tools strong{font-size:21px;margin-bottom:10px}
+#home .new-home-tools button>span:nth-last-child(2){font-size:13px;color:#9fb6cc;line-height:1.6}
+#home .new-home-tools em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.12em;color:#9fcdf9;margin-top:auto;padding-top:20px}
+#home .new-home-community{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:34px;border:1px solid #37536e;background:linear-gradient(110deg,#102c46,#0a1929);margin-bottom:25px}
+#home .new-home-community p{font-size:13px;color:#a6bbcf;line-height:1.6}
+#home .new-home-social{display:flex;flex-wrap:wrap;gap:10px}
+#home .new-home-social a{padding:14px 17px;color:#edf6ff;text-decoration:none;font-size:11px;font-weight:900;letter-spacing:.06em;border:1px solid #6287ad;background:#17344e;border-radius:6px}
+#home .new-home-social a:hover{background:#254e70}
+@media(max-width:850px){#home .new-home-hero{grid-template-columns:1fr;gap:15px}#home .new-home-showcase{min-height:390px}#home .new-home-tools{grid-template-columns:1fr}#home .new-home-tools button{min-height:200px}#home .new-home-community{flex-wrap:wrap}}
+@media(max-width:560px){#home .new-home-hero{padding-top:24px}#home .new-home-showcase-body{padding:24px}#home .new-home-metrics>div{padding:15px 6px}#home .new-home-metrics strong{font-size:22px}#home .new-home-metrics span{font-size:9px}#home .new-home-section-head{display:block}#home .new-home-community{padding:22px}#home .new-home-social{width:100%}#home .new-home-social a{flex:1;text-align:center}}
 </style>
 </head>
 
@@ -696,86 +721,45 @@
 <!-- HOME -->
 
 <section id="home" class="page active">
-
-  <div class="hero vault-premium-hero">
-    <div class="vault-watermark" aria-hidden="true">MATCH ATTAX · THE VAULT</div>
-    <div class="vault-orbit vault-orbit-left" aria-hidden="true"><span>100</span><small>CLUB</small></div>
-    <div class="vault-orbit vault-orbit-right" aria-hidden="true"><span>★</span><small>LIMITED</small></div>
-    <div class="hero-inner">
+  <div class="new-home-hero">
+    <div class="new-home-copy">
       <div class="hero-badge" id="connectionBadge">● LIVE CARD DATABASE</div>
-      <div class="vault-crown" aria-hidden="true">✦</div>
-      <h1>MATCH ATTAX<br><span>VAULT</span></h1>
-      <div class="vault-kicker">FOOTBALL CARD COLLECTOR HUB</div>
-      <div class="hero-tagline">Discover cards. Know their value. Trade smarter.</div>
-      <div class="hero-description">Discover the collection, explore estimated card values and make smarter trades — all in one collector hub.</div>
-      <div class="hero-buttons">
-        <button class="primary-btn" onclick="showPage('database')">Explore Card Database <span aria-hidden="true">↗</span></button>
-        <button class="secondary-btn" onclick="showPage('trade')">Check a Trade <span aria-hidden="true">↗</span></button>
-        <button class="secondary-btn" onclick="showPage('value')">Check Card Values <span aria-hidden="true">↗</span></button>
+      <div class="new-home-eyebrow">THE HOME OF FOOTBALL CARD COLLECTORS</div>
+      <h1>YOUR CARDS.<br><span>YOUR GAME.</span></h1>
+      <p class="new-home-lead">The smarter way to collect Match Attax.</p>
+      <p class="new-home-detail">Explore the card database, discover estimated collector values and compare trades — all in one place.</p>
+      <div class="new-home-actions">
+        <button class="new-home-primary" onclick="showPage('database')">Explore the database <span aria-hidden="true">↗</span></button>
+        <button class="new-home-outline" onclick="showPage('value')">Check card values <span aria-hidden="true">→</span></button>
       </div>
     </div>
-  </div>
-  <div class="vault-community">
-    <div><div class="vault-community-eyebrow">BE PART OF THE VAULT</div><h2>THE COLLECTOR COMMUNITY</h2><p>Talk cards. Share finds. Follow the journey.</p></div>
-    <div class="vault-community-actions">
-      <a class="vault-social vault-discord" href="https://discord.gg/uy5tprAYYv" target="_blank" rel="noopener noreferrer">Join Our Discord ↗</a>
-      <a class="vault-social vault-youtube" href="https://www.youtube.com/@MatchAttaxVault" target="_blank" rel="noopener noreferrer">Join Our YouTube ↗</a>
+    <div class="new-home-showcase" aria-label="Collector tools preview">
+      <div class="new-home-showcase-head"><span class="new-home-dot"></span> INSIDE THE VAULT <span>01 / 03</span></div>
+      <div class="new-home-showcase-body">
+        <div class="new-home-mark">MAV<span>®</span></div>
+        <div class="new-home-showcase-label">COLLECTOR TOOLS</div>
+        <div class="new-home-showcase-title">BUILD A BETTER<br>COLLECTION.</div>
+        <div class="new-home-mini-list"><div>01 <strong>Discover cards</strong><span>DATABASE ↗</span></div><div>02 <strong>Know the value</strong><span>VALUES ↗</span></div><div>03 <strong>Trade smarter</strong><span>TRADES ↗</span></div></div>
+      </div>
+      <div class="new-home-showcase-foot">MATCH ATTAX VAULT <span>EST. FOR COLLECTORS</span></div>
     </div>
   </div>
-
-  <div class="stats">
-
-    <div class="stat">
-      <div class="stat-number" id="cardStat">—</div>
-      <div class="stat-label">CARDS IN THE VAULT</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-number" id="teamStat">—</div>
-      <div class="stat-label">TEAMS REPRESENTED</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-number">₹</div>
-      <div class="stat-label">INDIA-FACING VALUE GUIDE</div>
-    </div>
-
+  <div class="new-home-metrics">
+    <div><strong id="cardStat">—</strong><span>CARDS IN THE VAULT</span></div>
+    <div><strong id="teamStat">—</strong><span>TEAMS REPRESENTED</span></div>
+    <div><strong>₹</strong><span>INDIA-FACING VALUE GUIDE</span></div>
   </div>
-
-
-  <div class="feature-grid">
-
-    <div class="feature" onclick="showPage('database')">
-      <div class="feature-icon">🗂️</div>
-      <h3>Card Database</h3>
-      <p>
-        Browse the Vault by player, team, card number,
-        category and estimated value.
-      </p>
-    </div>
-
-    <div class="feature" onclick="showPage('value')">
-      <div class="feature-icon">🔍</div>
-      <h3>Value Checker</h3>
-      <p>
-        Find the exact version of a card and see its
-        current estimated collector value.
-      </p>
-    </div>
-
-    <div class="feature" onclick="showPage('trade')">
-      <div class="feature-icon">⚖️</div>
-      <h3>Trade Checker</h3>
-      <p>
-        Compare multiple cards on both sides and see
-        whether a proposed trade is fair by value.
-      </p>
-    </div>
-
+  <div class="new-home-section-head"><div><span>EXPLORE THE PLATFORM</span><h2>Everything your collection needs.</h2></div><p>Three tools. One connected card database.</p></div>
+  <div class="new-home-tools">
+    <button onclick="showPage('database')"><span class="new-home-tool-no">01 / DISCOVER</span><span class="new-home-tool-symbol">▦</span><strong>Card Database</strong><span>Search players, teams, categories and card numbers.</span><em>EXPLORE CARDS ↗</em></button>
+    <button onclick="showPage('value')"><span class="new-home-tool-no">02 / EVALUATE</span><span class="new-home-tool-symbol">◇</span><strong>Value Checker</strong><span>Find estimated collector values for cards in the Vault.</span><em>CHECK VALUES ↗</em></button>
+    <button onclick="showPage('trade')"><span class="new-home-tool-no">03 / COMPARE</span><span class="new-home-tool-symbol">⇄</span><strong>Trade Checker</strong><span>Compare the estimated value of both sides of a trade.</span><em>COMPARE TRADES ↗</em></button>
   </div>
-
+  <div class="new-home-community">
+    <div><span>MORE THAN A DATABASE</span><h2>Join the collector community.</h2><p>Talk cards on Discord and catch new content on YouTube.</p></div>
+    <div class="new-home-social"><a href="https://discord.gg/uy5tprAYYv" target="_blank" rel="noopener noreferrer">JOIN OUR DISCORD ↗</a><a href="https://www.youtube.com/@MatchAttaxVault" target="_blank" rel="noopener noreferrer">JOIN OUR YOUTUBE ↗</a></div>
+  </div>
 </section>
-
 
 <!-- DATABASE -->
 
