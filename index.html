@@ -1682,19 +1682,19 @@ function vaultReviewText(result){
       'The Vault owner has been alerted. No database value was changed automatically.';
   }
   if(result.verdict==='VALUE_SUPPORTED'){
-    return '<strong>✓ No major discrepancy detected</strong><br>'+
-      'Available exact-card evidence did not trigger a review. This is not a guaranteed sale price or independent verification.';
+    return '<strong>✓ Current value looks reasonable</strong><br>'+
+      'The market check did not find a strong reason to change the stored Vault value.';
   }
   if(result.verdict==='LIMITED_EVIDENCE'){
-    return '<strong>⚠️ Price not verified — limited evidence</strong><br>'+
-      'There are not enough reliable exact-card completed sales to confirm or challenge this estimate. Do not treat it as a verified market value.';
+    return '<strong>✓ No change recommended</strong><br>'+
+      'Limited exact-card sold-price evidence was found, so the stored value remains a collector estimate.';
   }
   if(result.verdict==='DAILY_LIMIT'){
     return '<strong>Live check unavailable for now</strong><br>'+
       'Today’s free live-market allowance has been reached. The stored Vault value remains available.';
   }
   return '<strong>Market check completed</strong><br>'+
-    escapeHtml(result.message || 'The market-check result did not verify this price.');
+    escapeHtml(result.message || 'No change is recommended.');
 }
 
 async function checkVaultAI(id){
